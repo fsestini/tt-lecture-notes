@@ -10,15 +10,15 @@ actually we should use the term \textit{propositional family} since a
 proposition is a \textit{proposition} only when each argument is specified in
 the actual domain.
 
-Of course, once one has fixed a domain, a proposition $\Psi(x)$ must respect
+Of course, once one has fixed a domain, a proposition $\psi(x)$ must respect
 equality, as stated by the following substitution rule:
 
 \[
   \begin{prooftree}
-    \Psi(x)\quad
+    \psi(x)\quad
     x =_{X} y
     \justifies
-    \Psi(y)
+    \psi(y)
   \end{prooftree}
 \]
 
@@ -71,57 +71,57 @@ explain the informal constructive semantics of propositional connectives and
 quantifiers:
 
 \begin{itemize}
-\item A construction of $\Psi\wedge\Phi$ consists of a construction of $\Psi$
-  and a construction of $\Phi$;
-\item A construction of $\Psi_{1} \vee \Psi_{2}$ consists of a number
-  $i \in {1, 2}$ and a construction of $\Psi_{i}$;
-\item A construction of $\Psi_{1} \supset \Psi_{2}$ is a method transforming
-  every construction of $\Psi_{1}$ into a construction of $\Psi_{2}$;
+\item A construction of $\psi\wedge\varphi$ consists of a construction of $\psi$
+  and a construction of $\varphi$;
+\item A construction of $\psi_{1} \vee \psi_{2}$ consists of a number
+  $i \in {1, 2}$ and a construction of $\psi_{i}$;
+\item A construction of $\psi_{1} \supset \psi_{2}$ is a method transforming
+  every construction of $\psi_{1}$ into a construction of $\psi_{2}$;
 \item There is no possible construction of $\perp$ (where $\perp$ denotes
   falsity);
 \item From $\perp$ one may infer everything;
-\item A construction of $\neg\Psi$ is a method that turns every construction of
-  $\Psi$ into a non-existent object. That is, actually $\neg\Psi$ is just an
-  abbreviation of an implication $\Psi \supset \perp$;
-\item One may infer $\Psi$ from $\chi\wedge\Phi$ iff one may infer
-  $\Phi \supset \Psi$ from $\chi$;
-\item A construction of $(\Phi \vee \Psi) \supset \chi$ is a construction of
-  $\Phi \supset \chi$ and $\Psi \supset \chi$;
-\item For any set $X$, a construction of $(\exists x \in X)\Psi(x)$ exists if
+\item A construction of $\neg\psi$ is a method that turns every construction of
+  $\psi$ into a non-existent object. That is, actually $\neg\psi$ is just an
+  abbreviation of an implication $\psi \supset \perp$;
+\item One may infer $\psi$ from $\chi\wedge\varphi$ iff one may infer
+  $\varphi \supset \psi$ from $\chi$;
+\item A construction of $(\varphi \vee \psi) \supset \chi$ is a construction of
+  $\varphi \supset \chi$ and $\psi \supset \chi$;
+\item For any set $X$, a construction of $(\exists x \in X)\psi(x)$ exists if
   and only if there exists (in the sense that one can produce) an element
-  $d \in X$ such that $\Psi(d)$ holds;
-\item For any set $X$, a construction of $(\forall x \in X)\Psi(x)$ exists if
-  and only if $\Psi(d)$ holds for every $d \in X$;
+  $d \in X$ such that $\psi(d)$ holds;
+\item For any set $X$, a construction of $(\forall x \in X)\psi(x)$ exists if
+  and only if $\psi(d)$ holds for every $d \in X$;
 \item For any collection $\mathcal{P}$, a construction of
-  $(\exists p : P)\Psi(p)$ exists if and only if there exists an object
-  $q : \mathcal{P}$ such that $\Psi(q)$ holds;
+  $(\exists p : P)\psi(p)$ exists if and only if there exists an object
+  $q : \mathcal{P}$ such that $\psi(q)$ holds;
 \item For any collection $\mathcal{P}$, a construction of
-  $(\forall p \in \mathcal{P})\Psi(p)$ exists if and only if $\Psi(q)$ holds for
+  $(\forall p \in \mathcal{P})\psi(p)$ exists if and only if $\psi(q)$ holds for
   every $q : \mathcal{P}$.
 \end{itemize}
 
 As we shall see, this informal explanation may be expressed in terms of rules,
 and those rules may be interpreted (and hence used) by a computer.
 
-Note that the equivalence between $\neg\Psi$ and $\Psi\supset\perp$ holds also
-in classical logic. But note also that the intuitionistic statement $\neg\Psi$
-is much stronger than just ''there is no construction for $\Psi$''.
+Note that the equivalence between $\neg\psi$ and $\psi\supset\perp$ holds also
+in classical logic. But note also that the intuitionistic statement $\neg\psi$
+is much stronger than just ''there is no construction for $\psi$''.
 
 \begin{example}
   Consider the following two propositions:
   \begin{enumerate}
-  \item $\Psi\supset\neg\neg\Psi$
-  \item $\neg\neg\Psi\supset\Psi$
+  \item $\psi\supset\neg\neg\psi$
+  \item $\neg\neg\psi\supset\psi$
   \end{enumerate}
   They are classical tautologies, and in classical logic there is a symmetry
   between 1 and 2. The former, which should be written as
-  $\Psi\supset((\Psi\supset\perp)\supset\perp)$ has also an interpretation in
+  $\psi\supset((\psi\supset\perp)\supset\perp)$ has also an interpretation in
   intuitionistic logic, as follows:
   \begin{center}
-    Given a proof of $\Psi$, here is a proof of
-    $(\Psi\supset\perp)\supset\perp$: Take a proof of $\Psi\supset\perp$. It is
-    a method to translate proofs of $\Psi$ into proofs of $\perp$. Since we have
-    a proof of $\Psi$, we can use this method to obtain a proof of $\perp$.
+    Given a proof of $\psi$, here is a proof of
+    $(\psi\supset\perp)\supset\perp$: Take a proof of $\psi\supset\perp$. It is
+    a method to translate proofs of $\psi$ into proofs of $\perp$. Since we have
+    a proof of $\psi$, we can use this method to obtain a proof of $\perp$.
   \end{center}
   On the other hand, for the latter there isn't such a construction. Hence, it
   is no more true in intuitionistic logic.
@@ -135,12 +135,17 @@ only the former admits a computational interpretation on a finite number of
 rules. Further, a proper proposition which is true today will remain true
 forever. On the other hand, a not proper proposition might be true today and
 false tomorrow, since a collection doesn't have a fixed number of rules. For
-instance, $(\forall D : \mathcal{P}X)\Phi(D)$ might be true today and may become
-false when another subset, for which $\Phi$ is false, is added.
+instance, $(\forall D : \mathcal{P}X)\varphi(D)$ might be true today and may become
+false when another subset, for which $\varphi$ is false, is added.
 
 Propositions, and proper propositions as well, form a collection; two
-propositions $\Psi$ and $\Phi$, are considered to be equal when they are
-\textit{logically equivalent}, that is, $\Psi$ holds if and only if $\Phi$
-holds, or equivalently when both $\Psi$ and $\Phi$ hold. This is written as
-$\Psi \iff \Phi$.
+propositions $\psi$ and $\varphi$, are considered to be equal when they are
+\textit{logically equivalent}, that is, $\psi$ holds if and only if $\varphi$
+holds, or equivalently when both $\psi$ and $\varphi$ hold. This is written as
+$\psi \iff \varphi$.
 
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../notes"
+%%% End:
