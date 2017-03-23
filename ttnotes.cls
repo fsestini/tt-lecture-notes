@@ -56,3 +56,5 @@
 
 \newcommand{\ttrue}{\textsf{true}}
 \newcommand{\ffalse}{\textsf{false}}
+
+\newcommand{\subst}[2]{[#2/#1]}
