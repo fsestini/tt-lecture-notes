@@ -183,13 +183,26 @@ argument).
   \end{prooftree}
 \]
 
-The recursion symbol introduced by the elimination rule has a simple semantical
-explanation in terms of its computations: it first evaluates $n$, which is known
-to yield either $0$ or $s(n)$ for some $\inj{n}{\NN}$. In the first case, it
-evaluates $d$ and returns the result. Otherwise, it takes $n$ and feeds it to
-$e$ as its first argument, together with the result of evaluating itself on the
-predecessor, namely $n$. The second elimination rule shows that the recursor
-respects equality in the obvious way:
+Here, the notation $(x,y)e(x,y)$ denotes an abstraction of $(x,y)$
+over a term $e$ where $(x,y)$ can possibly appear free\footnote{Those
+  with a background in (functional) programming or $\lambda$-calculus
+  might think of $\lambda(x,y).e$} and $\natrec{n}{d}{(x,y)e(x,y)}$ in
+the conclusion has the following semantics: it evaluates its first
+argument $c$ which yields $0$ or $s(n)$ for some $n$.  Then:
+
+\begin{itemize}
+\item[-] If $c$ yields $0$, it evaluates and returns $d$, yielding a
+  canonical element $f = d \in C(0)$.  Since $C(c) = C(0)$ (because
+  $c = 0 \in \NN$) $f$ is also a canonical element of $C(c)$.
+\item[-] Otherwise, if $c$ yields $s(n)$, it returns
+  $e(n,\natrec{n}{d}{(x,y)e(x,y)})$.
+  \footnote{That is $e\subst{x}{n}
+  \subst{y}{\natrec{n}{d}{(x,y)e(x,y)}}$ where
+  $\subst{x}{T}$ denotes substitution}
+\end{itemize}
+
+The second elimination rule shows that the recursor respects equality
+in the obvious way:
 
 \[
   \begin{prooftree}
