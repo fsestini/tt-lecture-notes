@@ -220,9 +220,12 @@ Figure~\ref{natded-explicit-context}.
     \end{prooftree}
     \qquad
     \begin{prooftree}
-      \Gamma \vdash \exists{x}{A}{\varphi(x)}
-      \qquad
-      \Gamma, \inj{x}{A}, \tyj{y}{\varphi(x)} \vdash \psi
+      \begin{array}{@{}x}
+        \Gamma \vdash \propj{\psi}
+        \qquad
+        \Gamma \vdash \exists{x}{A}{\varphi(x)} \\
+        \Gamma, \inj{x}{A}, \tyj{y}{\varphi(x)} \vdash \psi
+      \end{array}
       \justifies
       \Gamma \vdash \psi
     \end{prooftree}
@@ -609,12 +612,17 @@ interpretation of the intuitionistic existential quantifier.
 \[
   \begin{prooftree}
     \Gamma \vdash \tyj{M}{\existsconn{x}{A}{\varphi(x)}}
-    \quad
+    \qquad
     \Gamma, x \in A, \tyj{y}{\varphi(x)} \vdash \tyj{N}{\psi}
+    \qquad
+    \Gamma \vdash \propj{\psi}
     \justifies
     \Gamma \vdash \tyj{\existselimop{M}{(y)N}}{\psi}
   \end{prooftree}
 \]
+
+Notice how the premise $\Gamma \vdash \propj{\psi}$ forces $\psi$ to \emph{not}
+depend on the parameter $x$ used in the second premise.
 
 \paragraph{True and false}
 
@@ -738,6 +746,7 @@ obvious ``prop'' judgements are left implicit.
       \qquad
       \begin{prooftree}
         \begin{array}{@{}c}
+          \Gamma \vdash \propj{\psi} \\
           \Gamma \vdash \tyj{M}{\existsconn{x}{A}{\varphi(x)}}\\
           \Gamma, x \in A, \tyj{y}{\varphi(x)} \vdash \tyj{N}{\psi}
         \end{array}
