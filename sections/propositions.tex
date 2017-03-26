@@ -115,16 +115,18 @@ is much stronger than just ``there is no construction for $\psi$''.
   \end{enumerate}
   They are classical tautologies, and in classical logic there is a symmetry
   between 1 and 2. The former, which should be written as
-  $\psi\supset((\psi\supset\perp)\supset\perp)$ has also an interpretation in
-  intuitionistic logic, as follows:
-  \begin{center}
-    Given a proof of $\psi$, here is a proof of
-    $(\psi\supset\perp)\supset\perp$: Take a proof of $\psi\supset\perp$. It is
-    a method to translate proofs of $\psi$ into proofs of $\perp$. Since we have
-    a proof of $\psi$, we can use this method to obtain a proof of $\perp$.
-  \end{center}
-  On the other hand, for the latter there isn't such a construction. Hence, it
-  is no more true in intuitionistic logic.
+  $\psi\supset((\psi\supset\perp)\supset\perp)$, is also intuitionistically
+  valid. A proof of such a proposition is an effective method, or procedure,
+  which, given a proof of $\psi$, yields a proof of
+  $(\psi \supset \bot) \supset \bot$. The latter is itself a procedure which,
+  given a way of transforming a proof of $\psi$ into a proof of $\bot$, returns
+  a proof of $\bot$. Hence, a method that proves
+  $(\psi \supset \bot) \supset \bot$ is one that takes the procedure proving
+  $\psi \supset \bot$, applies it to the proof of $\psi$, and returns the result
+  which is a proof of $\bot$.
+  
+  On the other hand, for $\neg\neg\psi\supset\psi$ there isn't such a
+  construction. Hence, it is no more true in intuitionistic logic.
 \end{example}
 
 A proposition is said to be \textit{proper} when all the quantifiers which
