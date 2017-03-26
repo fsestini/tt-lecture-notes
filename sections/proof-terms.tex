@@ -882,9 +882,65 @@ obvious ``prop'' judgements are left implicit.
 
 \subsection{Proof normalization}
 
-\subsubsection{Conjunction}
 
+Out treatise of proof normalization starts with the observation that an
+elimination rule in our system is, in a sense, the inverse of the corresponding
+introduction rule: by an application of an elimination rule one essentially only
+restores what had already been established if the major premise of the
+application was inferred by an application of an introduction rule. The essence
+is that in such situations, the pair of applications of the introduction rule
+followed by the elimination rule can be eliminated, because the deduction of the
+conclusion can be obtained from their premises. Prawitz calls this the
+\emph{inversion principle} in [prawitz]. The same idea is expressed by Pfenning
+in [...], by saying that the elimination rules of natural deduction are
+\emph{not too strong}. Consider the following derivation:
 
+\[
+  \begin{prooftree}
+    \[
+      \begin{array}{@{}c}
+        \mathcal{D} \\
+        \Gamma, A \vdash B  
+      \end{array}
+      \justifies
+      \Gamma \vdash \implconn{A}{B}
+    \] \quad
+    \begin{array}{@{}c}
+      \mathcal{D'}
+      \Gamma \vdash A
+    \end{array}
+    \justifies
+    \Gamma \vdash B
+  \end{prooftree}
+\]
+
+It is quite clear that introducing $\implconn{A}{B}$ and then immediately
+eliminating it is a redundancy. Such a detour could have been avoided by simply
+replacing the assumption for $A$ in $\mathcal{D}$ with the actual derivation in
+$\mathcal{D'}$. More formally:
+
+\[
+  \begin{prooftree}
+    \begin{array}{@{}c}
+      \mathcal{D'} \\
+      \Gamma \vdash A
+    \end{array}
+    \quad
+    \begin{array}{@{}c}
+      \mathcal{D} \\
+      \Gamma, A \vdash B  
+    \end{array}
+    \justifies
+    \Gamma \vdash B
+  \end{prooftree}
+\]
+
+It turns out that such redundant applications of introduction rule followed by
+elimination rule with the formula just introduced as major premise, also called
+\emph{detours}, can be removed from derivations in a systematic way. We show how
+to perform such \emph{local reductions} for each connective:
+
+\paragraph{Conjunction}
 
 \[
   \begin{prooftree}
@@ -914,7 +970,7 @@ obvious ``prop'' judgements are left implicit.
   \Gamma \vdash B
 \]
 
-\subsubsection{Disjunction}
+\paragraph{Disjunction}
 
 \[
   \begin{prooftree}
@@ -934,7 +990,7 @@ obvious ``prop'' judgements are left implicit.
   \end{prooftree}
 \]
 
-\subsubsection{Implication}
+\paragraph{Implication}
 
 \[
   \begin{prooftree}
@@ -954,7 +1010,7 @@ obvious ``prop'' judgements are left implicit.
   \end{prooftree}
 \]
 
-\subsubsection{Universal quantification}
+\paragraph{Universal quantification}
 
 \[
   \begin{prooftree}
@@ -969,8 +1025,7 @@ obvious ``prop'' judgements are left implicit.
   \Gamma[t/w] \vdash A[w/x][t/w] \equiv \Gamma \vdash A[t/x]
 \]
 
-\subsubsection{Existential quantification}
-
+\paragraph{Existential quantification}
 
 \[
   \begin{prooftree}
@@ -999,6 +1054,159 @@ obvious ``prop'' judgements are left implicit.
     \Gamma \vdash B
   \end{prooftree}
 \]
+
+This leads us to a \footnote{we say ``a'' instead of ``the'' because most
+  proof-theoretical studies on the normalization of natural deduction consider
+  proof reductions that eliminate additional forms of redundancy than that of
+  detours. For our purposes, however, it sufficies to consider detour-free
+  derivations. For details we refer to the bibliography on the topic, which is
+  pointed out at the end of the section.} definition of normal deduction.
+
+\begin{definition}
+  A \emph{normal deduction} is a deduction in which no \emph{detours} occur.
+\end{definition}
+
+The following important theorem holds.
+
+\begin{theorem}[Normalization theorem]
+  If $\Gamma \vdash \varphi$ holds in the system of intuitionistic natural
+  deduction, then there is a normal deduction of $\varphi$ from $\Gamma$ in this
+  system.
+\end{theorem}
+\begin{proof}
+  By adapting the proof of Theorem 1 in [Prawitz], which is a stronger
+  statement.
+\end{proof}
+
+The above theorem states that every natural deduction proof can be reduced to a
+normal proof. This property is also called \emph{weak normalization}. Actually,
+the calculus can be proved to have a stronger property, that of \emph{strong
+  normalization}: not only there exists a particular way to normalize a proof,
+but \emph{every} possible normalization process, or sequence of reduction steps,
+terminates to the \emph{same} normal proof.
+
+\subsubsection{Form of normal deductions}
+
+We will now prove a theorem that holds for closed normal deductions, which will
+be essential to justify the meaning of proof terms for natural deduction given
+in Section~\ref{proof-terms}.
+
+\begin{definition}
+  A \emph{main branch} of a derivation is a branch which starts from a top node
+  (a leaf of the derivation, if seen as a tree), ends in the conclusion, and in
+  which nodes (apart from the last) are either premises of introduction rules or
+  major premises of elimination rules.
+\end{definition}
+
+\begin{proposition}
+  Every deduction has a main branch.
+\end{proposition}
+\begin{proof}
+  By straightforward induction on the height of the derivation. Here are some
+  representative cases:
+
+  \begin{enumerate}
+  \item The base case in the derivation which assumes $\varphi$ as hypothesis
+    and asserts it. In this case, the main branch in trivially the formula
+    $\varphi$ itself;
+  \item The last rule is $\andintrorule$:
+
+    \[
+      \begin{prooftree}
+        \begin{array}{@{}c}
+          \mathcal{D} \\
+          \varphi
+        \end{array}
+        \quad
+        \begin{array}{@{}c}
+          \mathcal{E} \\
+          \psi
+        \end{array}
+        \justifies
+        \andconn{\varphi}{\psi}
+      \end{prooftree}
+    \]
+
+    Then, both $\mathcal{D}$ and $\mathcal{E}$ have main branches $\pi_1$ and
+    $\pi_2$ respectively. The main branch for the whole derivation is
+    constructed by appending $\andconn{\varphi}{\psi}$ to either $\pi_1$ or
+    $\pi_2$.
+    
+  \item The last rule is $\implelimrule$:
+
+    \[
+      \begin{prooftree}
+        \begin{array}{@{}c}
+          \mathcal{D} \\
+          \implconn{\varphi}{\psi}
+        \end{array}
+        \quad
+        \begin{array}{@{}c}
+          \mathcal{E} \\
+          \varphi
+        \end{array}
+        \justifies
+        \psi
+      \end{prooftree}
+    \]
+
+    Here, again, both $\mathcal{D}$ and $\mathcal{E}$ have main branches $\pi_1$
+    and $\pi_2$ respectively, but a main branch for the whole derivation can
+    only be constructed by appending $\psi$ to $\pi_1$.
+  \end{enumerate}
+\end{proof}
+
+\begin{lemma}\label{elimintrolemma}
+  Let $\mathcal{D}$ be a detour-free deduction. Then, every main branch is
+  formed by a sequence of elimination rules followed by a sequence of
+  introduction rules.
+\end{lemma}
+\begin{proof}
+  Suppose there exists a main branch of $\mathcal{D}$ violating the above
+  condition. Then, we can find a sequence of introduction rules preceeding an
+  elimination rule. The conclusion of the last of such introduction rules
+  constitutes the major premise of the following elimination rule, by definition
+  of main branch, and therefore it forms a detour. But this is in contradiction
+  with the hypothesis that $\mathcal{D}$ is detour-free.
+  \footnote{
+    The reasoning of this proof may seem rather unconstructive given the usage
+    of classical devices such as $\implconn{\neg \neg \varphi}{\varphi}$. We
+    recall, however, that the proof is about properties of finite structures
+    (derivation trees), which are decidable. Classical reasoning is
+    constructively admissible when only decidable predicates are involved.}
+\end{proof}
+
+\begin{lemma}\label{mainbranchassumptionlemma}
+  Consider a derivation $\mathcal{D}$ of $\varphi$ from assumptions $\Gamma$,
+  that is, $\Gamma \vdash \varphi$. Then, if $\pi$ is a main branch of
+  $\mathcal{D}$ involving only major premises of elimination rules, it
+  starts from a hypothesis in $\Gamma$.
+\end{lemma}
+\begin{proof}
+  It sufficies to observe that no elimination rule discharges assumptions in the
+  branch of the major premise. The thesis follows immediately.
+\end{proof}
+
+\begin{theorem}\label{canonicalproofthrm}
+  Let $\mathcal{D}$ be a closed detour-free derivation of $\varphi$, that is a
+  normal derivation of $\vdash \varphi$. Then, the conclusion of $\mathcal{D}$
+  has been derived by an introduction rule.
+\end{theorem}
+\begin{proof}
+  Suppose $\mathcal{D}$ begins with an elimination rule. Then, by
+  Lemma~\ref{elimintrolemma}, all main branches of the major premise of the
+  elimination rule, and by definition of main branch, all main branches of
+  $\mathcal{D}$ involve exclusively major premises of elimination rules. From
+  Lemma~\ref{mainbranchassumptionlemma}, all such main branches start from an
+  undischarged assumption of $\mathcal{D}$. But by hypothesis, there are no
+  assumptions.
+\end{proof}
+
+Theorem~\ref{canonicalproofthrm}, together with the normalization theorem,
+essentially says that every closed proof of a proposition $\varphi$ can be
+mechanically reduced in a finite amount of time to a \emph{canonical proof},
+that is, one in which $\varphi$ is proved by the introduction rule of its
+outermost connective.
 
 \subsection{Normalization as computation}
 
