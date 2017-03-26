@@ -951,49 +951,94 @@ to perform such \emph{local reductions} for each connective:
 
 \paragraph{Conjunction}
 
+A \emph{detour} on a conjunction simply reduces to either one of the premises of
+the introduction rule, depending on the formula that is the conclusion of the
+elimination rule.
+
 \[
   \begin{prooftree}
     \[
-    \Gamma \vdash A \qquad \Gamma \vdash B
-    \justifies
-    \Gamma \vdash A \wedge B
+      \ndderives{\mathcal{D}}{\Gamma \vdash A}
+      \qquad
+      \ndderives{\mathcal{E}}{\Gamma \vdash B}
+      \justifies
+      \Gamma \vdash A \wedge B
     \]
     \justifies
     \Gamma \vdash A
   \end{prooftree}
   \qquad \leadsto \qquad
-  \Gamma \vdash A
+  \ndderives{\mathcal{D}}{\Gamma \vdash A}
 \]
+
+and similarly
 
 \[
   \begin{prooftree}
     \[
-    \Gamma \vdash A \qquad \Gamma \vdash B
-    \justifies
-    \Gamma \vdash A \wedge B
+      \ndderives{\mathcal{D}}{\Gamma \vdash A}
+      \qquad
+      \ndderives{\mathcal{E}}{\Gamma \vdash B}
+      \justifies
+      \Gamma \vdash A \wedge B
     \]
     \justifies
     \Gamma \vdash B
   \end{prooftree}
   \qquad \leadsto \qquad
-  \Gamma \vdash B
+  \ndderives{\mathcal{E}}{\Gamma \vdash B}
 \]
 
 \paragraph{Disjunction}
 
+An elimination of a disjunction contains proofs of the conclusion for the two
+possible cases, since it is not known \emph{a priori} which of the two disjoints
+holds. If we have a derivation $\mathcal{D}$ of the formula that introduced the
+disjunction, all information is already in our hands, so we can just take the
+corresponding proof of the conclusion and compose it with $\mathcal{D}$.
+
 \[
   \begin{prooftree}
     \[
-      \Gamma \vdash A
+      \ndderives{\mathcal{D}}{\Gamma \vdash A}
       \justifies
       \Gamma \vdash A \vee B
     \]
-    \qquad \Gamma, A \vdash C \qquad \Gamma, B \vdash C
+    \qquad
+    \derives{\mathcal{E}}{\Gamma, A \vdash C}
+    \qquad \Gamma, B \vdash C
     \justifies
     \Gamma \vdash C
   \end{prooftree} \qquad \leadsto \qquad
   \begin{prooftree}
-    \Gamma \vdash A \qquad \Gamma, A \vdash C
+    \ndderives{\mathcal{D}}{\Gamma \vdash A}
+    \qquad
+    \ndderives{\mathcal{E}}{\Gamma, A \vdash C}
+    \justifies
+    \Gamma \vdash C
+  \end{prooftree}
+\]
+
+and similarly
+
+\[
+  \begin{prooftree}
+    \[
+      \ndderives{\mathcal{D}}{\Gamma \vdash B}
+      \justifies
+      \Gamma \vdash A \vee B
+    \]
+    \qquad
+    \Gamma, A \vdash C
+    \qquad
+    \derives{\mathcal{E}}{\Gamma, B \vdash C}
+    \justifies
+    \Gamma \vdash C
+  \end{prooftree} \qquad \leadsto \qquad
+  \begin{prooftree}
+    \ndderives{\mathcal{D}}{\Gamma \vdash B}
+    \qquad
+    \ndderives{\mathcal{E}}{\Gamma, B \vdash C}
     \justifies
     \Gamma \vdash C
   \end{prooftree}
@@ -1001,19 +1046,29 @@ to perform such \emph{local reductions} for each connective:
 
 \paragraph{Implication}
 
+In order to eliminate an implication $\implconn{\varphi}{\psi}$ to derive
+$\psi$, we must possess a proof of the antecedent $\varphi$. If the implication
+has been derived by introduction, that means we were able to show a derivation
+$\mathcal{D}$ of the conclusion $\psi$ from the assumption $\varphi$. But then,
+we might just compose $\mathcal{D}$ with the derivation of $\varphi$ that we
+already have:
+
 \[
   \begin{prooftree}
     \[
-      \Gamma, A \vdash B
+      \ndderives{\mathcal{D}}{\Gamma, A \vdash B}
       \justifies
       \Gamma \vdash A \supset B
     \]
-    \qquad \Gamma \vdash A
+    \qquad
+    \derives{\mathcal{E}}{\Gamma \vdash A}
     \justifies
     \Gamma \vdash B
   \end{prooftree}\qquad \leadsto \qquad
   \begin{prooftree}
-    \Gamma, A \vdash B \qquad \Gamma \vdash A
+    \ndderives{\mathcal{D}}{\Gamma, A \vdash B}
+    \qquad
+    \ndderives{\mathcal{E}}{\Gamma \vdash A}
     \justifies
     \Gamma \vdash B
   \end{prooftree}
@@ -1021,46 +1076,82 @@ to perform such \emph{local reductions} for each connective:
 
 \paragraph{Universal quantification}
 
+A detour involving a universal quantification is a proof of $\varphi(t)$ for
+some term $\inj{t}{A}$ and predicate $\varphi$ on $A$, where the eliminated
+universal quantification has been established by a previous derivation of
+$\varphi(w)$ for a parameter $w$ that is free in all undischarged
+assumptions. It follows that we can just substitute $t$ for $w$ in the
+derivation of $\varphi(w)$, and get to the same conclusion.
+
 \[
   \begin{prooftree}
     \[
-      \Gamma \vdash A[w/x]
+      \ndderives{\mathcal{D}}{\Gamma, \inj{w}{A} \vdash \varphi(w)}
       \justifies
-      \Gamma \vdash \forall x A
+      \Gamma \vdash \forallconn{x}{A}{\varphi(x)}
     \]
+    \qquad
+    \derives{\mathcal{E}}{\Gamma \vdash \inj{t}{A}}
     \justifies
-    \Gamma \vdash A[t/x]
+    \Gamma \vdash \varphi(t)
   \end{prooftree} \qquad \leadsto \qquad
-  \Gamma[t/w] \vdash A[w/x][t/w] \equiv \Gamma \vdash A[t/x]
+  \begin{prooftree}
+    \ndderives{\mathcal{D}}{\Gamma, \inj{w}{A} \vdash \varphi(w)}
+    \quad
+    \ndderives{\mathcal{E}}{\Gamma \vdash \inj{t}{A}}
+    \justifies
+    \Gamma \vdash \varphi(w)[t/w]
+    \using{sost}
+  \end{prooftree}
 \]
+
+where $\varphi(w)[t/w] \equiv \varphi(t)$, which gives us the conclusion. This
+result is actually quite obvious: as the universal quantifier is an
+internalization of a meta-level universal quantification, it does not really
+matter if we instantiate $\varphi$ on the basis on the object- or meta- level
+quantification.
 
 \paragraph{Existential quantification}
 
+We prove a proposition $\psi$ from $\existsconn{x}{A}{\varphi(x)}$ if we can
+show a derivation $\mathcal{E}$ for $\psi$ from the assumption that $\varphi(x)$
+holds for a fresh parameter $x$. That is, $\mathcal{E}$ is parametric in $x$. It
+follows that replacing $x$ for another term $t$ in $\mathcal{E}$ does not change
+its ability to show $\psi$ true. Now, if the existential has been derived by
+introduction, we possess a derivation of $\varphi(t)$ for some term
+$\inj{t}{A}$. We can therefore just compose this derivation with $\mathcal{E}$,
+to get a derivation of the conclusion without the detour.
+
 \[
   \begin{prooftree}
     \[
-      \Gamma \vdash A[t/x]
+      \ndderives{\mathcal{D}}{\Gamma \vdash A(t)}
+      \qquad
+      \ndderives{\mathcal{D'}}{\Gamma \vdash \inj{t}{A}}
       \justifies
-      \Gamma \vdash \exists x A
+      \Gamma \vdash \existsconn{x}{A}{\varphi(x)}
     \]
-    \qquad \Gamma, A[w/x] \vdash B
+    \qquad
+    \derives{\mathcal{E}}{\Gamma, \inj{w}{A}, \varphi(w) \vdash \psi}
     \justifies
     \Gamma \vdash B
-    \using{w \notin \mathrm{FV}(\Gamma, B)}
   \end{prooftree}
 \]
 \[
   \qquad \leadsto \qquad
   \begin{prooftree}
-    \Gamma \vdash A[t/x]
+    \derives{\mathcal{D}}{\Gamma \vdash A(t)}
     \qquad
     \[
-      \Gamma, A[w/x] \vdash B
+      \ndderives{\mathcal{D'}}{\Gamma \vdash \inj{t}{A}}
+      \qquad
+      \ndderives{\mathcal{E}}{\Gamma, \inj{w}{A}, \varphi(w) \vdash \psi}
       \justifies
-      \Gamma[t/w], A[w/x][t/w] \vdash B[t/w] \equiv \Gamma, A[t/x] \vdash B
+      \Gamma, \varphi(t) \vdash \psi[t/w] \equiv \psi
+      \using{sost}
     \]
     \justifies
-    \Gamma \vdash B
+    \Gamma \vdash \psi
   \end{prooftree}
 \]
 
