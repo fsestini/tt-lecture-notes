@@ -36,6 +36,12 @@
 \newcommand{\ap}[2]{\textsf{Ap}(#1, #2)}
 \newcommand{\abs}[2]{(\lambda #1)(#2)}
 
+\newcommand{\ndderives}[2]{
+  \begin{array}{@{}c}
+    #1 \\
+    #2
+  \end{array}}
+
 \newcommand{\derives}[2]{\[#1 \proofdotnumber=0 \leadsto #2\]}
 \newcommand{\derivesfrom}[3]{\[#1 \using #2 \proofdotseparation=1.2ex
     \proofdotnumber=4 \leadsto #3\]}
