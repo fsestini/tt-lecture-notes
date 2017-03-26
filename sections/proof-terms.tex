@@ -135,17 +135,17 @@ Figure~\ref{natded-explicit-context}.
     \begin{prooftree}
       \Gamma \vdash \varphi \qquad \Gamma \vdash \psi
       \justifies
-      \Gamma \vdash \varphi \wedge \psi
+      \Gamma \vdash \andconn{\varphi}{\psi}
     \end{prooftree}
     \qquad
     \begin{prooftree}
-      \Gamma \vdash \varphi \wedge \psi
+      \Gamma \vdash \andconn{\varphi}{\psi}
       \justifies
       \Gamma \vdash \varphi
     \end{prooftree}
     \qquad
     \begin{prooftree}
-      \Gamma \vdash \varphi \wedge \psi
+      \Gamma \vdash \andconn{\varphi}{\psi}
       \justifies
       \Gamma \vdash \psi
     \end{prooftree}
@@ -155,17 +155,17 @@ Figure~\ref{natded-explicit-context}.
     \begin{prooftree}
       \Gamma \vdash \varphi
       \justifies
-      \Gamma \vdash \varphi \vee \psi
+      \Gamma \vdash \orconn{\varphi}{\psi}
     \end{prooftree}
     \qquad
     \begin{prooftree}
       \Gamma \vdash \psi
       \justifies
-      \Gamma \vdash \varphi \vee \psi
+      \Gamma \vdash \orconn{\varphi}{\psi}
     \end{prooftree}
     \qquad
     \begin{prooftree}
-      \Gamma \vdash \varphi \vee \psi
+      \Gamma \vdash \orconn{\varphi}{\psi}
       \quad
       \Gamma, \tyj{u}{\varphi} \vdash C
       \quad
@@ -179,11 +179,11 @@ Figure~\ref{natded-explicit-context}.
     \begin{prooftree}
       \Gamma, \tyj{u}{\varphi} \vdash \psi
       \justifies
-      \Gamma \vdash \varphi \supset \psi
+      \Gamma \vdash \implconn{\varphi}{\psi}
     \end{prooftree}
     \qquad
     \begin{prooftree}
-      \Gamma \vdash \varphi \supset \psi \qquad \Gamma \vdash \varphi
+      \Gamma \vdash \implconn{\varphi}{\psi} \qquad \Gamma \vdash \varphi
       \justifies
       \Gamma \vdash \psi
     \end{prooftree}
@@ -195,11 +195,11 @@ Figure~\ref{natded-explicit-context}.
       \quad
       \Gamma, \inj{x}{A} \vdash \varphi(x)
       \justifies
-      \Gamma \vdash (\forall x \in A) \varphi(x)
+      \Gamma \vdash \forallconn{x}{A}{\varphi(x)}
     \end{prooftree}
     \qquad
     \begin{prooftree}
-      \Gamma \vdash (\forall \inj{x}{A}) \varphi(x)
+      \Gamma \vdash \forallconn{x}{A}{\varphi(x)}
       \quad
       \Gamma \vdash \inj{t}{A}
       \justifies
@@ -216,11 +216,11 @@ Figure~\ref{natded-explicit-context}.
         \Gamma \vdash \inj{t}{A}  
       \end{array}
       \justifies
-      \Gamma \vdash (\exists \inj{x}{A}) \varphi(x)
+      \Gamma \vdash \existsconn{x}{A}{\varphi(x)}
     \end{prooftree}
     \qquad
     \begin{prooftree}
-      \Gamma \vdash (\exists \inj{x}{A}) \varphi(x)
+      \Gamma \vdash \exists{x}{A}{\varphi(x)}
       \qquad
       \Gamma, \inj{x}{A}, \tyj{y}{\varphi(x)} \vdash \psi
       \justifies
@@ -230,11 +230,11 @@ Figure~\ref{natded-explicit-context}.
   \[
     \begin{prooftree}
       \justifies
-      \Gamma \vdash \top
+      \Gamma \vdash \trueconn
     \end{prooftree}
     \qquad\qquad\qquad
     \begin{prooftree}
-      \Gamma \vdash \bot
+      \Gamma \vdash \falseconn
       \justifies
       \Gamma \vdash \varphi
     \end{prooftree}
@@ -429,33 +429,35 @@ Figure~\ref{natded-explicit-context}.
 
 \subsection{Proof terms}
 
-We write $\Gamma \vdash M : A$ to express the judgement ``$M$ is a \emph{proof
-  term} for the proposition $A$ under the hypotheses $\Gamma$''.
-% We extend our definition of contexts to allow assumptions about proofs of
-% propositions:
+We now see the \emph{static} nature of the Curry-Howard isomorphism, that is the
+correspondence between propositions (expressed as formulas) and types for
+$\lambda$-terms. This correspondence is just another way to reveal the
+connections (and differences) between language and meta-language: we
+\emph{construct proofs} of a proposition $\varphi$ in the same way as we
+\emph{derive} the \emph{judgement} $\truej{\varphi}$. The first is an
+internalization in the object language of the second, which is a feature of the
+meta-language.
 
-% \[
-%   \begin{prooftree}
-%     \Gamma \vdash \propj{A}
-%     \justifies
-%     \ctxtj{\Gamma, \tyj{x}{A}}
-%     \using{\tyj{x}{A} \text{ not in } \Gamma}
-%   \end{prooftree}
-% \]
+According to the BHK interpretation of intuitionistic logic, a proof of a
+proposition is an effective construction. Proof terms formalize this aspect,
+showing not only that a proposition is true, but also giving a construction for
+it. Writing $\tyj{p}{\varphi}$ for the judgement ``$p$ is a proof term of the
+proposition $\varphi$'', we have thus the following equivlence
 
 We now extend our system of natural deduction with proof terms:
 
 \subsubsection{Conjunction}
 
-We know what counts as a proof of the proposition $A \wedge B$, namely a
-proof of $A$ and a proof of $B$. It makes sense for a proof term for the
-conjunction, therefore, to be a pair of proofs, one of $A$ and one of $B$:
+We know what counts as a proof of the proposition $\andconn{\varphi}{\psi}$,
+namely a proof of $\varphi$ and a proof of $\psi$. It makes sense for a proof
+term for the conjunction, therefore, to be a pair of proofs, one of $\varphi$
+and one of $\psi$:
 
 \[
   \begin{prooftree}
-    \Gamma \vdash \tyj{M}{A} \qquad \Gamma \vdash \tyj{N}{B}
+    \Gamma \vdash \tyj{M}{\varphi} \qquad \Gamma \vdash \tyj{N}{\psi}
     \justifies
-    \Gamma \vdash \tyj{\pair{M}{N}}{A \wedge B}
+    \Gamma \vdash \tyj{\pair{M}{N}}{\andconn{\varphi}{\psi}}
   \end{prooftree}
 \]
 
@@ -464,37 +466,37 @@ by projection:
 
 \[
   \begin{prooftree}
-    \Gamma \vdash \tyj{M}{A \wedge B}
+    \Gamma \vdash \tyj{M}{\andconn{\varphi}{\psi}}
     \justifies
-    \Gamma \vdash \tyj{\snd{M}}{B}
+    \Gamma \vdash \tyj{\snd{M}}{\psi}
   \end{prooftree}
   \qquad
   \begin{prooftree}
-    \Gamma \vdash \tyj{M}{A \wedge B}
+    \Gamma \vdash \tyj{M}{\andconn{\varphi}{\psi}}
     \justifies
-    \Gamma \vdash \tyj{\fst{M}}{A}
+    \Gamma \vdash \tyj{\fst{M}}{\varphi}
   \end{prooftree}
 \]
 
-\subsubsection{Disjunction}
+\paragraph{Disjunction}
 
-A proof of a disjunction $A \vee B$ is a proof of $A$ or a proof of $B$,
-together with the information telling us \emph{which one} of the two. The proof
-term then is the proof itself, with \emph{tags} telling us whether the proof
-refers to the first or the second disjunct, and what is the disjunct about which
-we are not saying anything:
+A proof of a disjunction $\orconn{\varphi}{\psi}$ is a proof of $\varphi$ or a
+proof of $\psi$, together with the information telling us \emph{which one} of
+the two. The proof term then is the proof itself, with \emph{tags} telling us
+whether the proof refers to the first or the second disjunct, and what is the
+disjunct about which we are not saying anything:
 
 \[
   \begin{prooftree}
-    \Gamma \vdash \tyj{M}{A}
+    \Gamma \vdash \tyj{M}{\varphi}
     \justifies
-    \Gamma \vdash \tyj{\inleft{B}{M}}{A \vee B}
+    \Gamma \vdash \tyj{\inleft{\psi}{M}}{\orconn{\varphi}{\psi}}
   \end{prooftree}
   \qquad
   \begin{prooftree}
-    \Gamma \vdash \tyj{M}{B}
+    \Gamma \vdash \tyj{M}{\psi}
     \justifies
-    \Gamma \vdash \tyj{\inright{A}{M}}{A \vee B}
+    \Gamma \vdash \tyj{\inright{\varphi}{M}}{\orconn{\varphi}{\psi}}
   \end{prooftree}
 \]
 
@@ -503,42 +505,41 @@ itself, and proving the conclusion by case analysis.
 
 \[
   \begin{prooftree}
-    \Gamma \vdash \tyj{M}{A \vee B}
+    \Gamma \vdash \tyj{M}{\orconn{\varphi}{\psi}}
     \qquad
     \Gamma, \tyj{x}{A} \vdash \tyj{N_1}{C}
     \qquad
     \Gamma, \tyj{y}{B} \vdash \tyj{N_2}{C}
     \justifies
-    \Gamma \vdash \tyj{\casedisj{M}{(x)N_1}{(y)N_2}}{C}
+    \Gamma \vdash \tyj{\orelimop{M}{(x)N_1}{(y)N_2}}{C}
   \end{prooftree}
 \]
 
 \subsubsection{Implication}
 
-A proof of an implication $\varphi \supset \psi$ is understood to be a method,
-or operation, that yields a proof of $\psi$ given a proof of
-$\varphi$.
+A proof of an implication $\implconn{\varphi}{\psi}$ is understood to be a
+method, or operation, that yields a proof of $\psi$ given a proof of $\varphi$.
 
 \[
   \begin{prooftree}
     \Gamma, \tyj{x}{\varphi} \vdash \tyj{b(x)}{\psi}
     \justifies
-    \Gamma \vdash \tyj{\lambda_{\supset} x . b(x)}{\varphi \supset \psi}
+    \Gamma \vdash \tyj{\implctor{x}{b(x)}}{\implconn{\varphi}{\psi}}
   \end{prooftree}
   \qquad
   \begin{prooftree}
-    \Gamma \vdash \tyj{M}{A \supset B}
+    \Gamma \vdash \tyj{M}{\implconn{\varphi}{\psi}}
     \qquad
-    \Gamma \vdash \tyj{N}{A}
+    \Gamma \vdash \tyj{N}{\varphi}
     \justifies
-    \Gamma \vdash \tyj{\ap{M}{N}}{B}
+    \Gamma \vdash \tyj{\implelimop{M}{N}}{\psi}
   \end{prooftree}
 \]
 
 \subsubsection{Universal quantification}
 
 A similar situation is with universal quantification: a proof of
-$(\forall \inj{x}{A})\varphi (x)$ is an operation that yields a proof of
+$\forallconn{x}{A}{\varphi(x)}$ is an operation that yields a proof of
 $\varphi(x)$ given an element $x$ of the set $A$.
 
 \[
@@ -548,17 +549,16 @@ $\varphi(x)$ given an element $x$ of the set $A$.
     \Gamma, x \in A \vdash \tyj{b(x)}{\varphi (x)}
     % \Gamma \vdash \tyj{M}{A[w/x]}
     \justifies
-    \Gamma \vdash \tyj{\lambda_{\forall} w . b(x)}{(\forall x A)\varphi(x)}
-    % \using{w \notin \mathrm{FV}(\Gamma)}
+    \Gamma \vdash \tyj{\forallctor{w}{b(x)}}{\forallconn{x}{A}{\varphi(x)}}
   \end{prooftree}
 \]
 \[
   \begin{prooftree}
     \Gamma \vdash \inj{t}{A}
     \qquad
-    \Gamma \vdash \tyj{M}{(\forall x A)\varphi(x)}
+    \Gamma \vdash \tyj{M}{\forallconn{x}{A}{\varphi(x)}}
     \justifies
-    \Gamma \vdash \tyj{\ap{M}{t}}{\varphi(t)}
+    \Gamma \vdash \tyj{\forallelimop{M}{t}}{\varphi(t)}
   \end{prooftree}
 \]
 
@@ -571,21 +571,20 @@ interpretation of the intuitionistic existential quantifier.
   \begin{prooftree}
     \Gamma, \inj{x}{A} \vdash \propj{\varphi(x)}
     \quad
-    \Gamma \vdash t \in A
+    \Gamma \vdash \inj{t}{A}
     \quad
     \Gamma \vdash \tyj{M}{\varphi(t)}
     \justifies
-    \Gamma \vdash \tyj{\pair{t}{M}}{(\exists \inj{x}{A})\varphi(x)}
+    \Gamma \vdash \tyj{\pair{t}{M}}{\existsconn{x}{A}{\varphi(x)}}
   \end{prooftree}
 \]
 \[
   \begin{prooftree}
-    \Gamma \vdash \tyj{M}{(\exists \inj{x}{A})\varphi(x)}
+    \Gamma \vdash \tyj{M}{\existsconn{x}{A}{\varphi(x)}}
     \quad
     \Gamma, x \in A, \tyj{y}{\varphi(x)} \vdash \tyj{N}{\psi}
     \justifies
-    \Gamma \vdash \tyj{\unpack{M}{(y)N}}{\psi}
-    % \using{w \notin \mathrm{FV}(\Gamma)}
+    \Gamma \vdash \tyj{\existselimop{M}{(y)N}}{\psi}
   \end{prooftree}
 \]
 
@@ -597,7 +596,7 @@ $\star$ that denotes its unique, canonical proof.
 \[
   \begin{prooftree}
     \justifies
-    \Gamma \vdash \tyj{\star}{\top}
+    \Gamma \vdash \tyj{\star}{\trueconn}
   \end{prooftree}
 \]
 
@@ -606,9 +605,9 @@ if we are presented with a proof of it we might as well deduce anything.
 
 \[
   \begin{prooftree}
-    \Gamma \vdash \tyj{M}{\bot}
+    \Gamma \vdash \tyj{M}{\falseconn}
     \justifies
-    \Gamma \vdash \tyj{\abort{A}{M}}{A}
+    \Gamma \vdash \tyj{\falseelimop{A}{M}}{A}
   \end{prooftree}
 \]
 
@@ -621,17 +620,17 @@ obvious ``prop'' judgements are left implicit.
       \begin{prooftree}
         \Gamma \vdash \tyj{M}{\varphi} \qquad \Gamma \vdash \tyj{N}{\psi}
         \justifies
-        \Gamma \vdash \tyj{\pair{M}{N}}{\varphi \wedge \psi}
+        \Gamma \vdash \tyj{\pair{M}{N}}{\andconn{\varphi}{\psi}}
       \end{prooftree}
       \qquad
       \begin{prooftree}
-        \Gamma \vdash \tyj{M}{\varphi \wedge \psi}
+        \Gamma \vdash \tyj{M}{\andconn{\varphi}{\psi}}
         \justifies
         \Gamma \vdash \tyj{\fst{M}}{\varphi}
       \end{prooftree}
       \qquad
       \begin{prooftree}
-        \Gamma \vdash \tyj{M}{\varphi \wedge \psi}
+        \Gamma \vdash \tyj{M}{\andconn{\varphi}{\psi}}
         \justifies
         \Gamma \vdash \tyj{\snd{M}}{\psi}
       \end{prooftree}
@@ -640,24 +639,24 @@ obvious ``prop'' judgements are left implicit.
       \begin{prooftree}
         \Gamma \vdash \tyj{M}{\varphi}
         \justifies
-        \Gamma \vdash \tyj{\inleft{\psi}{M}}{\varphi \vee \psi}
+        \Gamma \vdash \tyj{\inleft{\psi}{M}}{\orconn{\varphi}{\psi}}
       \end{prooftree}
       \qquad
       \begin{prooftree}
         \Gamma \vdash \tyj{M}{\psi}
         \justifies
-        \Gamma \vdash \tyj{\inright{\varphi}{M}}{\varphi \vee \psi}
+        \Gamma \vdash \tyj{\inright{\varphi}{M}}{\orconn{\varphi}{\psi}}
       \end{prooftree}
     \]
     \[
       \begin{prooftree}
-        \Gamma \vdash \tyj{M}{\varphi \vee \psi}
+        \Gamma \vdash \tyj{M}{\orconn{\varphi}{\psi}}
         \qquad
         \Gamma, \tyj{x}{\varphi} \vdash \tyj{d_1(x)}{\phi}
         \qquad
         \Gamma, \tyj{x}{\psi} \vdash \tyj{d_2(x)}{\phi}
         \justifies
-        \Gamma \vdash \tyj{\casedisj{M}{(x)d_1}{(x)d_2}}{\phi}
+        \Gamma \vdash \tyj{\orelimop{M}{(x)d_1}{(x)d_2}}{\phi}
         \using{\orelimrule}
       \end{prooftree}
     \]
@@ -665,15 +664,15 @@ obvious ``prop'' judgements are left implicit.
       \begin{prooftree}
         \Gamma, \tyj{x}{\varphi} \vdash \tyj{b(x)}{\psi}
         \justifies
-        \Gamma \vdash \tyj{\lambda_{\supset} x . b(x)}{\varphi \supset \psi}
+        \Gamma \vdash \tyj{\implctor{x}{b(x)}}{\implconn{\varphi}{\psi}}
       \end{prooftree}
       \qquad
       \begin{prooftree}
-        \Gamma \vdash \tyj{M}{\varphi \supset \psi}
+        \Gamma \vdash \tyj{M}{\implconn{\varphi}{\psi}}
         \qquad
         \Gamma \vdash \tyj{N}{\varphi}
         \justifies
-        \Gamma \vdash \tyj{\ap{M}{N}}{\psi}
+        \Gamma \vdash \tyj{\implelimop{M}{N}}{\psi}
       \end{prooftree}
     \]
     \[
@@ -683,8 +682,7 @@ obvious ``prop'' judgements are left implicit.
           \Gamma, x \in A \vdash \tyj{b(x)}{\varphi (x)}  
         \end{array}
         \justifies
-        \Gamma \vdash \tyj{\lambda_{\forall} w . b(x)}{(\forall x A)\varphi(x)}
-        % \using{w \notin \mathrm{FV}(\Gamma)}
+        \Gamma \vdash \tyj{\forallctor{w}{b(x)}}{\forallconn{x}{A}{\varphi(x)}}
       \end{prooftree}
       \qquad
       \begin{prooftree}
@@ -692,10 +690,10 @@ obvious ``prop'' judgements are left implicit.
           \Gamma, \inj{x}{A} \vdash \propj{\varphi(x)} \\
           \Gamma \vdash \inj{t}{A}
           \qquad
-          \Gamma \vdash \tyj{M}{(\forall x A)\varphi(x)}
+          \Gamma \vdash \tyj{M}{\forallconn{x}{A}{\varphi(x)}}
         \end{array}
         \justifies
-        \Gamma \vdash \tyj{\ap{M}{t}}{\varphi(t)}
+        \Gamma \vdash \tyj{\forallelimop{M}{t}}{\varphi(t)}
       \end{prooftree}
     \]
     \[
@@ -707,20 +705,18 @@ obvious ``prop'' judgements are left implicit.
           \Gamma \vdash \tyj{M}{\varphi(t)}
           \end{array}
         \justifies
-        \Gamma \vdash \tyj{\pair{t}{M}}{(\exists \inj{x}{A})\varphi(x)}
+        \Gamma \vdash \tyj{\pair{t}{M}}{\existsconn{x}{A}{\varphi(x)}}
       \end{prooftree}
       \qquad
       \begin{prooftree}
         \begin{array}{@{}c}
-          \Gamma \vdash \tyj{M}{(\exists \inj{x}{A})\varphi(x)}\\
+          \Gamma \vdash \tyj{M}{\existsconn{x}{A}{\varphi(x)}}\\
           \Gamma, x \in A, \tyj{y}{\varphi(x)} \vdash \tyj{N}{\psi}
         \end{array}
         \justifies
-        \Gamma \vdash \tyj{\unpack{M}{(y)N}}{\psi}
-        % \using{w \notin \mathrm{FV}(\Gamma)}
+        \Gamma \vdash \tyj{\existselimop{M}{(y)N}}{\psi}
       \end{prooftree}
     \]
-
   \end{mdframed}
   \caption{\label{natded-proofterms} Natural deduction with proof terms.}
 \end{figure}
