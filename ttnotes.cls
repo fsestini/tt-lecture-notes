@@ -17,6 +17,10 @@
 \theoremstyle{definition}
 \newtheorem{example}{Example}[section]
 \newtheorem{exercise}{Exercise}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{lemma}{Lemma}[section]
 
 \newcommand{\strong}[1]{\textbf{#1}}
 \newcommand{\hsetj}[2]{#1 \; \text{set} \; (#2)}
