@@ -474,7 +474,7 @@ We now extend our system of natural deduction with proof terms. We review the
 meaning of logical connectives according to the BHK interpretation, and see how
 to reflect it as proof terms.
 
-\subsubsection{Conjunction}
+\paragraph{Conjunction}
 
 We know what counts as a proof of the proposition $\andconn{\varphi}{\psi}$,
 namely a proof of $\varphi$ and a proof of $\psi$. It makes sense for a proof
@@ -543,7 +543,7 @@ itself, and proving the conclusion by case analysis.
   \end{prooftree}
 \]
 
-\subsubsection{Implication}
+\paragraph{Implication}
 
 A proof of an implication $\implconn{\varphi}{\psi}$ is understood to be a
 method, or operation, that yields a proof of $\psi$ given a proof of $\varphi$.
@@ -564,7 +564,7 @@ method, or operation, that yields a proof of $\psi$ given a proof of $\varphi$.
   \end{prooftree}
 \]
 
-\subsubsection{Universal quantification}
+\paragraph{Universal quantification}
 
 A similar situation is with universal quantification: a proof of
 $\forallconn{x}{A}{\varphi(x)}$ is an operation that yields a proof of
@@ -590,7 +590,7 @@ $\varphi(x)$ given an element $x$ of the set $A$.
   \end{prooftree}
 \]
 
-\subsubsection{Existential quantification}
+\paragraph{Existential quantification}
 
 Again, the rules of $\exists$ decorated with proof terms validate the usual
 interpretation of the intuitionistic existential quantifier.
@@ -616,7 +616,7 @@ interpretation of the intuitionistic existential quantifier.
   \end{prooftree}
 \]
 
-\subsubsection{True and false}
+\paragraph{True and false}
 
 The proposition $\top$ is trivially true, therefore we fix a constant symbol
 $\star$ that denotes its unique, canonical proof.
