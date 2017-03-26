@@ -444,7 +444,35 @@ showing not only that a proposition is true, but also giving a construction for
 it. Writing $\tyj{p}{\varphi}$ for the judgement ``$p$ is a proof term of the
 proposition $\varphi$'', we have thus the following equivlence
 
-We now extend our system of natural deduction with proof terms:
+\[
+  \truej{\varphi} \quad \text{iff} \quad
+  \text{there exists } p \text{ such that } \tyj{p}{\varphi}
+\]
+
+Our proof terms need to be effective. Despite not formally binding ourselves to
+recursive functions (CT\footnote{Formal Church's Thesis. For an overview on
+  constructive axioms and their validity/consistency within constructive
+  theories, see Troelstra, Metamathematical Investigation of Intuitionistic
+  Arithmetic and Analysis, or Troelstra and van Dalen, Constructivism in
+  Mathematics vol. 1.} is not axiomatized in most constructive theories,
+although valid in some of their interpretations), we will construct them as
+terms of a typed $\lambda$-calculus.
+
+We extend our definition of contexts to allow assumptions about proofs of
+propositions:
+
+\[
+  \begin{prooftree}
+    \Gamma \vdash \propj{A}
+    \justifies
+    \ctxtj{\Gamma, \tyj{x}{A}}
+    \using{x \text{ fresh}}
+  \end{prooftree}
+\]
+
+We now extend our system of natural deduction with proof terms. We review the
+meaning of logical connectives according to the BHK interpretation, and see how
+to reflect it as proof terms.
 
 \subsubsection{Conjunction}
 
