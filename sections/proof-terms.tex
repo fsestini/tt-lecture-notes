@@ -1306,7 +1306,17 @@ Theorem~\ref{canonicalproofthrm}, together with the normalization theorem,
 essentially says that every closed proof of a proposition $\varphi$ can be
 mechanically reduced in a finite amount of time to a \emph{canonical proof},
 that is, one in which $\varphi$ is proved by the introduction rule of its
-outermost connective.
+outermost connective. Notice that a byproduct of this result is the consistency
+of the logical calculus:
+
+\begin{theorem}
+  Natural deduction for intuitionistic predicate logic is consistent, that is,
+  it cannot prove $\bot$.
+\end{theorem}
+\begin{proof}
+  Suppose there is a proof of $\bot$. Then, there is a normal proof, which has
+  an introduction rule as last rule. But no rule introduces $\bot$.
+\end{proof}
 
 \subsection{Normalization as computation}
 
