@@ -902,7 +902,85 @@ followed by the elimination rule can be eliminated, because the deduction of the
 conclusion can be obtained from their premises. Prawitz calls this the
 \emph{inversion principle} in \cite{prawitz1965}. The same idea is expressed by
 Pfenning in \cite{pfenninglecturescl}, by saying that the elimination rules of
-natural deduction are \emph{not too strong}. Consider the following derivation:
+natural deduction are \emph{not too strong}.
+
+\subsubsection{Digression on substitution rules}
+
+To illustrate proof transformations, we are going to need two essential
+structural rules to deal with substitutions. Consider a derivation $\mathcal{D}$
+depending on some variable $x$ of type $A$. In our system, we depict this as
+
+\[
+  \begin{array}{@{}c}
+    \mathcal{D} \\
+    \Gamma, \inj{x}{A}, \Gamma'(x) \vdash \varphi(x)
+  \end{array}
+\]
+
+It seems reasonable to consider a derivation $\mathcal{D}'$ which is just
+$\mathcal{D}$ with some term $\inj{t}{A}$ in place of $x$, and expect it to be
+derivable as well.
+
+\[
+  \begin{array}{@{}c}
+    \mathcal{D}' \\
+    \Gamma, \Gamma'(t) \vdash \varphi(t)
+  \end{array}
+\]
+
+\begin{lemma}
+  The \emph{substitution rule}
+
+  \[
+    \begin{prooftree}
+      \Gamma, \inj{x}{A}, \Gamma'(x) \vdash \varphi(x)
+      \qquad
+      \inj{t}{A}
+      \justifies
+      \Gamma, \Gamma'(t) \vdash \varphi(t)
+      \using{sost}
+    \end{prooftree}
+  \]
+
+  is admissible.
+\end{lemma}
+\begin{proof}
+  Left as exercise.
+\end{proof}
+
+The same goes for derivations. Suppose we have a derivation of $\psi$ on the
+basis of some assumptions $\Gamma$ and an assumption for $\varphi$, and suppose
+we were also able to show $\varphi$ from the same assumptions $\Gamma$.
+
+\[
+  \Gamma, \varphi \vdash \psi \qquad \qquad \Gamma \vdash \varphi
+\]
+
+Then, we should be able to derive $\psi$ from $\Gamma$ alone, since the other
+assumption $\varphi$ is already a consequence of $\Gamma$.
+
+\begin{lemma}
+  The \emph{cut rule}
+
+  \[
+    \begin{prooftree}
+      \Gamma, \varphi \vdash \psi
+      \qquad
+      \Gamma \vdash \varphi
+      \justifies
+      \Gamma \vdash \psi
+    \end{prooftree}
+  \]
+
+  is admissible.
+\end{lemma}
+\begin{proof}
+  Direct consequence of cut elimination for sequent calculus.
+\end{proof}
+
+\subsubsection{Detour conversions}
+
+Consider the following derivation:
 
 \[
   \begin{prooftree}
