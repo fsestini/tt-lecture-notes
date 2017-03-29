@@ -536,13 +536,17 @@ itself, and proving the conclusion by case analysis.
 
 \[
   \begin{prooftree}
-    \Gamma \vdash \tyj{M}{\orconn{\varphi}{\psi}}
-    \qquad
-    \Gamma, \tyj{x}{A} \vdash \tyj{N_1}{C}
-    \qquad
-    \Gamma, \tyj{y}{B} \vdash \tyj{N_2}{C}
+    \begin{array}{@{}c}
+      \Gamma \vdash \propj{\chi}
+      \qquad
+      \Gamma \vdash \tyj{M}{\orconn{\varphi}{\psi}}
+      \\
+      \Gamma, \tyj{u}{\varphi} \vdash \tyj{d_1(u)}{\chi}
+      \qquad
+      \Gamma, \tyj{w}{\psi} \vdash \tyj{d_2(w)}{\chi}
+    \end{array}
     \justifies
-    \Gamma \vdash \tyj{\orelimop{M}{(x)N_1}{(y)N_2}}{C}
+    \Gamma \vdash \tyj{\orelimop{M}{(u)d_1}{(w)d_2}}{\chi}
   \end{prooftree}
 \]
 
