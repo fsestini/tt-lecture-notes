@@ -705,45 +705,49 @@ obvious ``prop'' judgements are left implicit.
   \begin{mdframed}
     \[
       \begin{prooftree}
-        \Gamma \vdash \tyj{M}{\varphi} \qquad \Gamma \vdash \tyj{N}{\psi}
+        \Gamma \vdash \tyj{p}{\varphi} \qquad \Gamma \vdash \tyj{q}{\psi}
         \justifies
-        \Gamma \vdash \tyj{\pair{M}{N}}{\andconn{\varphi}{\psi}}
+        \Gamma \vdash \tyj{\pair{p}{q}}{\andconn{\varphi}{\psi}}
       \end{prooftree}
       \qquad
       \begin{prooftree}
-        \Gamma \vdash \tyj{M}{\andconn{\varphi}{\psi}}
+        \Gamma \vdash \tyj{p}{\andconn{\varphi}{\psi}}
         \justifies
-        \Gamma \vdash \tyj{\fst{M}}{\varphi}
+        \Gamma \vdash \tyj{\fst{p}}{\varphi}
       \end{prooftree}
       \qquad
       \begin{prooftree}
-        \Gamma \vdash \tyj{M}{\andconn{\varphi}{\psi}}
+        \Gamma \vdash \tyj{p}{\andconn{\varphi}{\psi}}
         \justifies
-        \Gamma \vdash \tyj{\snd{M}}{\psi}
+        \Gamma \vdash \tyj{\snd{p}}{\psi}
       \end{prooftree}
     \]
     \[
       \begin{prooftree}
-        \Gamma \vdash \tyj{M}{\varphi}
+        \Gamma \vdash \tyj{p}{\varphi}
         \justifies
-        \Gamma \vdash \tyj{\inleft{\psi}{M}}{\orconn{\varphi}{\psi}}
+        \Gamma \vdash \tyj{\inleft{\psi}{p}}{\orconn{\varphi}{\psi}}
       \end{prooftree}
       \qquad
       \begin{prooftree}
-        \Gamma \vdash \tyj{M}{\psi}
+        \Gamma \vdash \tyj{p}{\psi}
         \justifies
-        \Gamma \vdash \tyj{\inright{\varphi}{M}}{\orconn{\varphi}{\psi}}
+        \Gamma \vdash \tyj{\inright{\varphi}{p}}{\orconn{\varphi}{\psi}}
       \end{prooftree}
     \]
     \[
       \begin{prooftree}
-        \Gamma \vdash \tyj{M}{\orconn{\varphi}{\psi}}
-        \qquad
-        \Gamma, \tyj{x}{\varphi} \vdash \tyj{d_1(x)}{\phi}
-        \qquad
-        \Gamma, \tyj{x}{\psi} \vdash \tyj{d_2(x)}{\phi}
+        \begin{array}{@{}c}
+          \Gamma \vdash \propj{\phi}
+          \qquad
+          \Gamma \vdash \tyj{p}{\orconn{\varphi}{\psi}}
+          \\
+          \Gamma, \tyj{x}{\varphi} \vdash \tyj{d_1(x)}{\phi}
+          \qquad
+          \Gamma, \tyj{x}{\psi} \vdash \tyj{d_2(x)}{\phi}
+        \end{array}
         \justifies
-        \Gamma \vdash \tyj{\orelimop{M}{(x)d_1}{(x)d_2}}{\phi}
+        \Gamma \vdash \tyj{\orelimop{p}{(x)d_1}{(x)d_2}}{\phi}
         \using{\orelimrule}
       \end{prooftree}
     \]
@@ -755,11 +759,11 @@ obvious ``prop'' judgements are left implicit.
       \end{prooftree}
       \qquad
       \begin{prooftree}
-        \Gamma \vdash \tyj{M}{\implconn{\varphi}{\psi}}
+        \Gamma \vdash \tyj{p}{\implconn{\varphi}{\psi}}
         \qquad
-        \Gamma \vdash \tyj{N}{\varphi}
+        \Gamma \vdash \tyj{q}{\varphi}
         \justifies
-        \Gamma \vdash \tyj{\implelimop{M}{N}}{\psi}
+        \Gamma \vdash \tyj{\implelimop{p}{q}}{\psi}
       \end{prooftree}
     \]
     \[
@@ -777,10 +781,10 @@ obvious ``prop'' judgements are left implicit.
           \Gamma, \inj{x}{A} \vdash \propj{\varphi(x)} \\
           \Gamma \vdash \inj{t}{A}
           \qquad
-          \Gamma \vdash \tyj{M}{\forallconn{x}{A}{\varphi(x)}}
+          \Gamma \vdash \tyj{p}{\forallconn{x}{A}{\varphi(x)}}
         \end{array}
         \justifies
-        \Gamma \vdash \tyj{\forallelimop{M}{t}}{\varphi(t)}
+        \Gamma \vdash \tyj{\forallelimop{p}{t}}{\varphi(t)}
       \end{prooftree}
     \]
     \[
@@ -789,20 +793,20 @@ obvious ``prop'' judgements are left implicit.
           \Gamma, \inj{x}{A} \vdash \propj{\varphi(x)} \\  
           \Gamma \vdash t \in A
           \quad
-          \Gamma \vdash \tyj{M}{\varphi(t)}
+          \Gamma \vdash \tyj{p}{\varphi(t)}
           \end{array}
         \justifies
-        \Gamma \vdash \tyj{\pair{t}{M}}{\existsconn{x}{A}{\varphi(x)}}
+        \Gamma \vdash \tyj{\pair{t}{p}}{\existsconn{x}{A}{\varphi(x)}}
       \end{prooftree}
       \qquad
       \begin{prooftree}
         \begin{array}{@{}c}
           \Gamma \vdash \propj{\psi} \\
-          \Gamma \vdash \tyj{M}{\existsconn{x}{A}{\varphi(x)}}\\
-          \Gamma, x \in A, \tyj{y}{\varphi(x)} \vdash \tyj{N}{\psi}
+          \Gamma \vdash \tyj{p}{\existsconn{x}{A}{\varphi(x)}}\\
+          \Gamma, x \in A, \tyj{y}{\varphi(x)} \vdash \tyj{q}{\psi}
         \end{array}
         \justifies
-        \Gamma \vdash \tyj{\existselimop{M}{(y)N}}{\psi}
+        \Gamma \vdash \tyj{\existselimop{p}{(y)q}}{\psi}
       \end{prooftree}
     \]
   \end{mdframed}
