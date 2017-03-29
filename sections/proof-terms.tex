@@ -609,8 +609,10 @@ element of the set of quantification:
 
 \paragraph{Existential quantification}
 
-Again, the rules of $\exists$ decorated with proof terms validate the usual
-interpretation of the intuitionistic existential quantifier.
+The rules of $\exists$ decorated with proof terms validate the usual
+interpretation of the intuitionistic existential quantifier as a ``package''
+containing an element of the set of quantification (a ``witness'') together with
+a proof that the predicate holds for the witness.
 
 \[
   \begin{prooftree}
@@ -618,25 +620,60 @@ interpretation of the intuitionistic existential quantifier.
     \quad
     \Gamma \vdash \inj{t}{A}
     \quad
-    \Gamma \vdash \tyj{M}{\varphi(t)}
+    \Gamma \vdash \tyj{p}{\varphi(t)}
     \justifies
-    \Gamma \vdash \tyj{\pair{t}{M}}{\existsconn{x}{A}{\varphi(x)}}
+    \Gamma \vdash \tyj{\pair{t}{p}}{\existsconn{x}{A}{\varphi(x)}}
   \end{prooftree}
 \]
+
+Notice that, as for disjunction, the elimination rule of the existential
+quantifier eliminates only towards plain propositions without any form of
+dependency.
+
 \[
   \begin{prooftree}
+    \Gamma \vdash \propj{\psi}
+    \qquad
     \Gamma \vdash \tyj{M}{\existsconn{x}{A}{\varphi(x)}}
     \qquad
     \Gamma, x \in A, \tyj{y}{\varphi(x)} \vdash \tyj{N}{\psi}
-    \qquad
-    \Gamma \vdash \propj{\psi}
     \justifies
     \Gamma \vdash \tyj{\existselimop{M}{(y)N}}{\psi}
   \end{prooftree}
 \]
 
-Notice how the premise $\Gamma \vdash \propj{\psi}$ forces $\psi$ to \emph{not}
-depend on the parameter $x$ used in the second premise.
+This is the main technical difference between the existential quantifier and the
+$\Sigma$ set constructor (which coincide in their introduction rules). Indeed,
+one of the reasons to keep propositions and sets formally distinct is to be able
+to give a weaker notion of existential quantification than the one that comes
+from the identification of propositions and sets/types as in M-L, and in
+particular of the existential quantifier and the strong indexed sum set.
+
+Notice in fact that, interpreting $\forall$ and $\exists$ as the
+set-constructors $\Pi$ and $\Sigma$, one validates the axiom
+of choice, identifying functions (total set-valued relations) and operations
+(effective total procedures).
+
+\[
+  \implconn{
+    \forallconn{x}{A}{\existsconn{y}{B}{R(x,y)}}
+  }{
+    \existsconn{f}{A \rightarrow B}{\forallconn{x}{A}{R(x, f(x))}}
+  }
+\]
+
+Distinguishing between propositions and sets allows us to define a weaker notion
+of existential elimination, which blocks the validity of the axiom of choice
+while still modelling the usual intuitionistic logic. The details of all this
+will be made precise when we talk about the stratification of the theory in two
+levels of abstraction, and the need for compatibility of these levels with
+existing classical and constructive theories.
+
+On a final note, observe how the premise $\Gamma \vdash \propj{\psi}$ forces
+$\psi$ to \emph{not} depend on the parameter $x$ used in the second
+premise. This is to say that the rule automatically satisfies the side-condition
+of the usual natural deduction system that the parameter be not free in the
+conclusion.
 
 \paragraph{True and false}
 
