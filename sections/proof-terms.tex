@@ -593,13 +593,17 @@ $\varphi(x)$ given an element $x$ of the set $A$.
     \Gamma \vdash \tyj{\forallctor{w}{b(x)}}{\forallconn{x}{A}{\varphi(x)}}
   \end{prooftree}
 \]
+
+To eliminate a universal quantification, it sufficies to provide an
+element of the set of quantification:
+
 \[
   \begin{prooftree}
     \Gamma \vdash \inj{t}{A}
     \qquad
-    \Gamma \vdash \tyj{M}{\forallconn{x}{A}{\varphi(x)}}
+    \Gamma \vdash \tyj{f}{\forallconn{x}{A}{\varphi(x)}}
     \justifies
-    \Gamma \vdash \tyj{\forallelimop{M}{t}}{\varphi(t)}
+    \Gamma \vdash \tyj{\forallelimop{f}{t}}{\varphi(t)}
   \end{prooftree}
 \]
 
