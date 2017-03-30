@@ -38,6 +38,8 @@
 \newcommand{\natrec}[3]{\textsf{R}(#1, #2, #3)}
 \newcommand{\ap}[2]{\textsf{Ap}(#1, #2)}
 \newcommand{\abs}[2]{(\lambda #1)(#2)}
+\newcommand{\setpow}[1]{\mathcal{P}#1}
+\newcommand{\complset}[1]{\overline{#1}}
 
 \newcommand{\ndderives}[2]{
   \begin{array}{@{}c}
