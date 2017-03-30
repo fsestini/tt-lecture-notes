@@ -34,6 +34,7 @@
 \newcommand{\insub}[0]{\varepsilon}
 \newcommand{\injsub}[2]{#1 \insub #2}
 \newcommand{\notinjsub}[2]{#1 \not\insub #2}
+\newcommand{\hpropj}[2]{#1 \; \text{prop} \; (#2)}
 \newcommand{\NN}{\mathbb{N}}
 \newcommand{\natrec}[3]{\textsf{R}(#1, #2, #3)}
 \newcommand{\ap}[2]{\textsf{Ap}(#1, #2)}
