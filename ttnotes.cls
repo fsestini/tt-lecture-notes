@@ -31,6 +31,9 @@
 \newcommand{\seteqj}[2]{#1 = #2}
 \newcommand{\hseteqj}[3]{#1 = #2 \; (#3)}
 \newcommand{\inj}[2]{#1 \in #2}
+\newcommand{\insub}[0]{\varepsilon}
+\newcommand{\injsub}[2]{#1 \insub #2}
+\newcommand{\notinjsub}[2]{#1 \not\insub #2}
 \newcommand{\NN}{\mathbb{N}}
 \newcommand{\natrec}[3]{\textsf{R}(#1, #2, #3)}
 \newcommand{\ap}[2]{\textsf{Ap}(#1, #2)}
