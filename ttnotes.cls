@@ -110,3 +110,6 @@
 \newcommand{\existsconn}[3]{(\exists \inj{#1}{#2})#3}
 \newcommand{\trueconn}{\top}
 \newcommand{\falseconn}{\bot}
+
+\newcommand{\newdefn}[1]{\textbf{#1}} % Use this whenever a new concept is defined
+
