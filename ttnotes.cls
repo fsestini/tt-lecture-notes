@@ -21,6 +21,7 @@
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{definition}{Definition}[section]
 \newtheorem{lemma}{Lemma}[section]
+\newtheorem{notation}{Notation}[section]
 
 \newcommand{\strong}[1]{\textbf{#1}}
 \newcommand{\hsetj}[2]{#1 \; \text{set} \; (#2)}
