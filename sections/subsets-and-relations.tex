@@ -230,7 +230,24 @@ preserves equality as well:
     therefore not a relation!
   \end{enumerate}
 \end{example}
-  
+
+\begin{example}
+  Notice that there is an obvious correspondence between subsets of the
+  cartiesian product $A \times B$ between two sets $A,B$ (which is itself a set)
+  and relations from $A$ to $B$. In particular
+
+  \begin{enumerate}
+  \item From a subset $\hpropj{D(z)}{\inj{z}{A\times B}}$, we can define the
+    corresponding relation $R(x,y) \equiv D(\pair{x}{y})$;
+  \item From a relation $\hpropj{R(x,y)}{\inj{x}{A},\inj{y}{B}}$, we can define
+    the corresponding subset $D(z) \equiv R(\fst{z},\snd{z})$.
+  \end{enumerate}
+
+  Moreover, from the induction principle of the cartesian product, it is
+  actually possible to prove
+  $\forallconn{x}{A}{\forallconn{y}{B}{(R(x,y) \iff D(\pair{x}{y}))}}$.
+\end{example}
+
 %\begin{example}
 %  \[ R(x,y) : x, y \in N \]
 %  \[ R(x,y)\ \text{iff}\ \forall s \in P(N),  \{x, y\} \subseteq s \]
