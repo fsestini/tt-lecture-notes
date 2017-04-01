@@ -32,7 +32,8 @@
 \newcommand{\hseteqj}[3]{#1 = #2 \; (#3)}
 \newcommand{\inj}[2]{#1 \in #2}
 \newcommand{\insub}[0]{\varepsilon}
-\newcommand{\injsub}[2]{#1 \insub #2}
+\newcommand{\injsub}[2]{#1\ \insub\ #2}
+\newcommand{\injsubexpl}[3]{#1\ \insub_{#2}\ #3}
 \newcommand{\notinjsub}[2]{#1 \not\insub #2}
 \newcommand{\hpropj}[2]{#1 \; \text{prop} \; (#2)}
 \newcommand{\NN}{\mathbb{N}}
