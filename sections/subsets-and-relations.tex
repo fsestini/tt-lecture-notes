@@ -1,20 +1,24 @@
 \section{Subsets}
 \subsection{Basic definitions}
 
-Let $X$ be a set.
+\begin{definition}[Subset]
+  Subsets and their elements are defined as follows:
+  \begin{enumerate}
+  \item Let $X$ be a set, and $D$ a unary property (or predicate), that is, a
+    \emph{proper}\footnote{Recall that a proposition is said to be proper, or
+      small, when all the \emph{quantifiers} which appear in it range only on
+      sets.} proposition depending on \emph{one} argument in \(X\).
+    Then, \(D\) \emph{is} a \newdefn{subset} of \(X\).
+  
+  \item If \(D\) is a subset of \(X\) and \(\inj{x}{X}\), we say that \(x\) is
+    an \textbf{element} of \(D\), written \(\injsubexpl{x}{X}{D}\), if \(x\)
+    satisfies the property \(D\).
+  \end{enumerate}
+\end{definition}
 
-Consider a unary property (or predicate), that is, a \emph{proper}\footnote{
-Recall that a proposition is said to be proper, or small, when all
-the \emph{quantifiers} which appear in it range only on sets.
-} proposition \(D(x)\) depending on \emph{one} argument in \(X\).
-
-Then,  \(D\) \emph{is} a \newdefn{subset} of \(X\).
-
-If \(D\) is a subset of \(X\) and \(x \in X\), we say that \(x\) is an
-\textbf{element} of \(D\), written \(x \epsilon_X D\), if \(x\)
-satisfies the property \(D\).
-
-The subscript \(X\) will be implicit most of the time.
+The subscript in a subset membership judgement will be implicit most of the
+time. Do take notice how we are using the notation \(\insub\) instead of the
+more familiar \(\in\). The reason will be apparent presently.
 
 \begin{example}
   Let, for example, be \(S\) the students of the University of Padua
@@ -22,42 +26,57 @@ The subscript \(X\) will be implicit most of the time.
   argument in \(S\), where \(M(s)\) if \(s\) is studying for a degree
   in Mathematics.
   
-  We will write \(\text{Marco} \epsilon_S M\) to denote that Marco is
+  We will write \(\injsubexpl{\text{Marco}}{S}{M}\) to denote that Marco is
   indeed pursuing a degree in Mathematics - and \(M\) also models the
   notion of the subset of mathematics students.
 \end{example}
 
 \begin{example}
   Let $C$ be a collection.
-  
-  Consider $L(s) = 1$ iff $s$ is friends with every element of $C$.
-
+  Consider $L(s) \equiv$ ``$s$ is friends with every element of $C$''.
   $L$ is not a subset (it's not proper).
 \end{example}
 
+Since \(D(x)\), just like any proposition (or, in this case, propositional
+family on X) respects equality of \(X\), membership in \(D\) also necessarily
+respects it:
 
-Do take notice how we are using the notation \(\insub\) instead of the
-more familiar \(\in\). The reason will be apparent presently.
+\[
+  \forallconn{x,y}{X}{(\implconn{\injsub{x}{D} \wedge x\ =_X\ y}{\injsub{y}{D}})}
+\].
 
-\paragraph{Equality} Since \(D(x)\), just like any proposition (or, in
-this case, propositional family on X) respects equality of \(X\),
-membership in \(D\) also necessarily respects it:
+This leads to a natural formulation of equality between subsets.
 
-\[ \forall (x, y \in X) : (\injsub{x}{D} \wedge x\ =_X\ y) \Rightarrow \injsub{y}{D} \].
+\begin{definition}[Subset equality]
+  Two subsets \(D, E\) of a set $X$ are equal when an element \(\inj{x}{X}\) is
+  in \(D\) iff is in \(E\):
 
-Moreover, two subsets \(D, E\) are equal when an element \(x \in X\)
-is in \(D\) iff is in \(E\):
+  \[
+    \forall D, E \subseteq X,
+    \implconn{\forallconn{x}{X}(\injsub{x}{D} \iff \injsub{x}{E})}{D = E}
+  \]  
+\end{definition}
 
-\[ \forall (D, E\ \text{subset}\ X) : (\forall x \in X)(
-    \injsub{x}{D} \Leftrightarrow\ \injsub{x}{E}) \Leftrightarrow D = E \]
+The collection of subsets of \(X\), with this notion of equality, is denoted by
+\(\setpow{X}\) and called the power collection of $X$ (\strong{not} powerset,
+for reasons that will soon be apparent) of \(X\).
 
-Clearly $\injsub{x}{D} \Leftrightarrow \injsub{x}{E}$ arises from
-$D(x) \Leftrightarrow E(x)$.
-    
-The collection of subsets of \(X\), with this notion
-of equality, is denoted by \(\setpow{X}\) and called the power
-collection (\strong{not} powerset, for reasons that will soon be
-apparent) of \(X\).
+Before moving on, we introduce some notation for later.
+
+\begin{notation}
+  Let \(\varphi\) be a proposition depending on an argument in a set \(X\).
+
+  \begin{enumerate}
+  \item We will write \((\exists \injsub{x}{D})\varphi(x)\) in lieu of
+    \((\exists \inj{x}{X})(\injsub{x}{D} \wedge \varphi(x))\) and
+    \((\forall \injsub{x}{D})\varphi(x)\) in lieu of
+    \((\exists \inj{x}{X})(\injsub{x}{D} \rightarrow \varphi(x))\);
+  \item If \(\varphi\) is unary \emph{and} proper, then
+    \(\{\inj{x}{X} : \varphi(x) \}\) is a subset;
+  \item We write \(D \between E\) in lieu of \((\exists \injsub{x}{D})E(x)\)
+    and \(D \subseteq E\) in lieu of \((\forall \injsub{x}{D})E(x)\).
+  \end{enumerate}
+\end{notation}
 
 \subsection{Properties (and un-properties) of subsets}
 
@@ -69,175 +88,149 @@ under the definition\footnote{It is to do a disservice to the subject
   accompanies is one mostly or exclusively familiar with ZFC and, all
   too often, unaware of it. We try to eliminate misconceptions
   first.}.
-
-?? further expands on the topic and its philosophical motivations.
+% TODO: further expand on the topic and its philosophical motivations.
 % TODO: cite sambin/valentini
-
 The first un-property is:
 
 \[ \text{No subset can be \emph{assumed} to exist.} \]
 % TODO: use something better than an equation environment...
 
-A subset arises when we can define it by a \emph{property}.  If no
-property is given, no subset can be drawn out of thin
-air\footnote{Note that in classical (ZFC-based) mathematics we can
-  conceive the existence ``of more subsets than propositions'', if we
-  assume propositions to be formulas over a finite formula.  This is
-  not the case here; one proposition, one subset.}.
+A subset arises when we can define it by a \emph{property}. If no property is
+given, no subset can be drawn out of thin air
+\footnote{Note that in classical (ZFC-based) mathematics we can conceive the
+existence ``of more subsets than propositions'', if we assume propositions to be
+formulas over an alphabet with countably many symbols. This is not the case
+here; one proposition, one subset.}.
+Moreover, subsets of a set do not form themselves a set, but only a collection,
+since it can be shown by diagonalization that it is impossible to
+generate all subsets of a set by a fixed finite number of rules.
+This is in contrast with the \strong{powerset axiom} of classical set theory,
+which postulates the existence of a set of all subsets of any given set.
 
 The second is:
 
 \[ \text{Subsets are not sets.} \]
 
 Subset and set are different concepts altogether.
-
 This is immediate from the definition: the logical type of a subset
 is that of a propositional \emph{family} over a set, which is
 different from a set.
-
 In fact we can also write \(\injsub{y}{D}\) as
 \(y \in \{x \in X : D(x)\}\); this is why we choose to use \(\insub\)
 for subsets.
 
-Besides the fact that we've-defined-them-different-period, there is a
-profound reason why we can't allow subsets to be sets in the familiar
-way.
-
+Besides the fact that sets and subsets are different by definition, there is a
+profound reason why we can't allow subsets to be sets in the familiar way.
 In ZFC-based mathematics, subsets are, of course, sets - by the
 \strong{axiom of separation}, which states that given any set $A$,
 there is a set $B$ such that, given any $x$, is a member of $B$ if and
 only if $x$ is a member of $A$ and some property $\varphi$ holds for $x$.
-
 In other words, the axiom of spearation allows to define
 $B \subseteq A$ by ``filtering'' elements of $A$ by some property
 $\varphi$.
 
 Allowing the axiom of separation in our theory would give rise to
 severe inconsistencies.
-
 Consider the property
 
 \[ U(x) = \text{``the Turing machine with index
   $x$ does not stop on input $x$''} \]
 
-It's a well known result of computability theory that there are no
-effective rules to generate $\{\inj{x}{N} : U(x) \}$.
+It's a well known result of computability theory that there are no effective
+rules to generate the elements of $\{\inj{x}{N} : U(x) \}$.  Therefore, if we
+did allow the axiom of separation, we would be faced with the fact that there
+are sets for which we do not have rules to effectively construct its canonical
+elements, in open contrast with the constructive principles we've so far built
+our theory upon.
 
-Therefore, if we did allow the axiom of separation, we would be faced
-with the fact that the subset $U$ of $N$ is also a set, but one the
-elements thereof are impossible to enumerate, in open contrast with
-the constructive principles we've so far built our theory upon.
+\[ \text{There is no notion of a}\ \strong{complement subset}.\]
 
-Notably, there is no notion of a \strong{complement subset}.
+Or at least, the usual notion of complement in classical set theory does not
+find any correspondence in this setting. In fact, \(\complset{\complset{D}}\) is
+just \(\{ x \in X : \neg\neg D(x) \}\). Proving $D = \complset{\complset{D}}$
+would require the classical law of double negation, or equivalent principles.
 
-Notice how being able to decide \(\injsub{y}{\complset{D}}\) for
-some complement subset \(\complset{D}\) of \(D\) would essentially
-entail deciding that \(y \in \{ x \in X : \neg D(x) \}\) on the
-basis of \(D(x)\) \emph{not} holding.
-
-Similarly, by admitting \(\complset{\complset{D}}\) we would have 
-\(\injsub{y}{\complset{\complset{D}}} = \injsub{y}{\{ x \in X : \neg\neg D(x) \}}\).
-
-This would amount to include the law of excluded middle or double negative
-elimination in our theory.
-
-\begin{example}[Not innocent until proven innocent]
-  This example, which may or may not be satirical in intent, is due
-  to %TODO cite bptools
+\begin{example}
+  This example, which may or may not be satirical in intent, is due to
+  \cite{basicpicture}.
 
   Let \(R\) be the set of residents of Italy.
   
-  \[ H(x) = x\ \text{is honest} \]
+  \[ H(x) \equiv \text{``}x\ \text{is honest''} \]
   
   \(H \subseteq R\) is the subset of honest residents.
-
   \(\inj{r}{R}\) not being exposed as dishonest is not sufficient to say that
-  \(r \epsilon H\):
+  \(\injsub{r}{H}\):
   
   \[ \notinjsub{x}{\complset{H}} \not\Rightarrow \injsub{r}{H} \]
 \end{example}
 
-It is now apparent why, whereas in ZFC we have the \strong{power set
-  axiom}, by which the power set is itself a set, it would be
-inadmissible here.
-
-There is further reason why we are armed with a humble power
-\emph{collection}: it can be shown by diagonalization that it is
-impossible to generate all subsets of a set by a fixed finite number
-of rules.
-% TODO elaborate
-
-\subsection{Quantification}
-%TODO what should this subsection be called?
-Before moving on, we introduce some notation for later.
-
-Let \(\varphi\) be a proposition depending on an argument in \(X\).
-
-We will write \((\exists \injsub{x}{D})\varphi\) in lieu of
-\((\exists \inj{x}{X})(\injsub{x}{D} \wedge \varphi)\) and
-\((\forall \injsub{x}{D})\varphi\) in lieu of
-\((\exists \inj{x}{X})(\injsub{x}{D} \rightarrow \varphi)\).
-
-As we've seen, if \(\varphi\) is unary on \emph{one} argument \(x\)
-\emph{and} proper, then \(E \equiv \{\inj{x}{X} : \varphi(x) \}\) is a
-subset.
-
-In this case we will also write \(D \between E\) in lieu of
-\((\exists x \epsilon D)\varphi\) and \(D \subseteq E\) in lieu of
-\((\forall x \epsilon D)\varphi\)
-
-
 \subsection{Relations and functions}
 Until now we've dealt with \emph{unary} propositions.
 
-A \newdefn{relation} $R$ between $X$ and $S$ is a \emph{binary} proper
-proposition, i.e. depending on two arguments:
+\begin{definition}[Relation]
+  A \newdefn{relation} $R$ between $X$ and $S$ is a \emph{binary} proper
+  proposition, i.e. depending on two arguments:
 
-\[ \hpropj{R(x, y)}{x \in X, y \in Y} \]
+  \[ \hpropj{R(x, y)}{x \in X, y \in Y} \]
+\end{definition}
 
 the order of arguments is relevant, in general, and thus we say that
 $R$ is a relation \emph{from} $X$ \emph{to} $S$ and write
 $R : X \rightarrow S$.
 
-From equality of propositions, we have that a relation preserves
-equality as well:
+From the fact that propositions preserve equality, we have that a relation
+preserves equality as well:
 
-\[ x =_X x' \wedge a =_S a' \Rightarrow R(x, a) \leftrightarrow R(x' ,
-  a' )\]
+\[
+  \implconn{
+    \andconn{x =_X x'}{a =_S a'}
+  }{
+    (R(x, a) \iff R(x' , a'))
+  }
+\]
 
-A relation $R$ from $X$ to $S$ is said to be \newdefn{total} if every
-element \(x \in X\) is related to at least one element \(a \in S\),
-that is, if \((\forall x \in X)(\exists a \in S)R(x, a)\) holds.
+\begin{definition}[Functional relation]
+  Let $X,S$ be sets, and $R$ a relation from $X$ to $S$.
+  
+  \begin{enumerate}
+  \item $R$ is \newdefn{total} if every element \(x \in X\) is related to at
+    least one element \(a \in S\), that is, if
+    \((\forall x \in X)(\exists a \in S)R(x, a)\) holds.
 
-A relation is also said to be \newdefn{single-valued} if every
-\(x \in X\) is related to at most one element in $S$.
+  \item $R$ is \newdefn{single-valued} if every \(x \in X\) is related to
+    at most one element in $S$, that is, if
 
-A relation is called a \newdefn{function} if it is total and single-valued.
+    \[
+      \forallconn{x}{A}{
+        \forallconn{y,z}{A}{
+          (\implconn{
+            \andconn{R(x,y)}{R(x,z)}
+          }{
+            y = z
+          })
+        }
+      }
+    \]
+
+    holds.
+
+  \item $R$ is called a \newdefn{function} if it is total and single-valued.
+  \end{enumerate}
+\end{definition}
 
 \begin{example}
-  \[ R : N \rightarrow N \]
-  \[ R(x,y) \equiv  x \geq y \] 
-  Is total, not single valued, not a function.
-\end{example}
+  Consider relations $R$ over the set of natural numbers.
 
-\begin{example}
-  \[ R : N \rightarrow N \]
-  \[ R(x,y) \equiv (x = 2y) \]
-  Is single valued but not total; not a function.
+  \begin{enumerate}
+  \item $R(x,y) \equiv  x \geq y$ is total, not single valued, not a function;
+  \item $R(x,y) \equiv (x = 2y)$ is single valued but not total; not a function;
+  \item $R(x,y) \equiv (x = y)$ is total and single valued, hence a function;
+  \item $R(x,y)\ \equiv\ \forall s \in \mathcal{P}(\NN) \top$ is not a proper proposition,
+    therefore not a relation!
+  \end{enumerate}
 \end{example}
-
-\begin{example}
-  \[ R : N \rightarrow N \]
-  \[ R(x,y) \equiv (x = y) \]
-  Is a genuine function.
-\end{example}
-
-\begin{example}[Fake example!]
-  \[ R : N \rightarrow N \]
-  \[ R(x,y)\ \equiv\ \forall s \in P(N) \top \]
-  $R$ is not a proper proposition, therefore not a relation!
-\end{example}
-
+  
 %\begin{example}
 %  \[ R(x,y) : x, y \in N \]
 %  \[ R(x,y)\ \text{iff}\ \forall s \in P(N),  \{x, y\} \subseteq s \]
@@ -248,9 +241,9 @@ The \newdefn{collection of relations} from $X$ to $S$ is denoted by
 $Rel(X, S)$.  The \newdefn{collection of functions} from \(X\) to
 \(S\) is denoted by \(Fun(X, S)\).
 
-Consider a family \(p(i) \in X (i \in I)\).  The subset of X defined
-by \((\exists i \in I)(x =_X p(i))\) is called the \newdefn{image} of
-\(I\) along \(p\).
+Consider an operation $\hinj{p(i)}{X}{\inj{i}{I}}$. The subset of $X$ defined
+by $\existsconn{i}{I}{(x =_X p(i))}$ is called the \newdefn{image} of \(I\)
+along \(p\).
 
 As subsets of a set, also relations and functions between two sets
 form a collection, and not a set, since there are no rules to
@@ -264,24 +257,23 @@ function \(\hat{p} : X \rightarrow S\), called the \newdefn{graph} of
 
 \[ \hat{p}(x,a) \equiv (a =_S p(x))\]
 
-While every operation determines a function, it is \strong{not} the
-case that every function determines an operation.
-
-Our functions are total and single-valued relations, and are in this
-respect not unlike plain old ZFC functions.
-
-Recall that our ``operations'' are computationally effective, explicit
-procedures\footnote{To reinforce this we go as far as choosing the
-  letter $p$ to suggest ``program''}.
-
+While every operation determines a function, it is \strong{not} the case that
+every function determines an operation, since defining an operation $p$ requires
+to be able to give instructions to yield the output $p(x)$ from a given argument
+$x$
+\footnote{To reinforce this we go as far as choosing the letter $p$ to suggest
+  ``program''}.
 It is a classic result of computability theory that there are
 functions (called uncomputable functions) for computing which there
-does not exist an effective operation or algorithm - therefore not all
+does not exist an effective operation or algorithm. Therefore not all
 functions admit an operation.
 
-Note, moreover, that, where one operation exists, it is unique.
-Operations are extensionally equal - i.e., they are equal if and only
-if they compute the same function.
+Note, moreover, that as the theory we are describing is extensional, also
+equality between operations is extensional:
+
+\[
+  p = q \iff \forallconn{x,y}{X}{p(x) = q(x)}
+\]
 
 %%% Local Variables:
 %%% mode: latex
