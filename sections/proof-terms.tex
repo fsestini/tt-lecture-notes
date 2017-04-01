@@ -1,0 +1,1459 @@
+\section{Proof terms and the Curry-Howard isomorphism}
+
+\subsection{Historical notes (WIP)}
+
+The term ``Curry-Howard isomorphism'', also stated as the slogans ``propositions
+as types'' or ``proofs as programs'', originally refers to a strong
+correspondence between formal systems of constructive logic and typed lambda
+calculi, and in a more general and modern view, between proof theory and
+theoretical computer science.
+
+The BHK interpretation of intuitionistic logic was already a hint towards this
+idea (although the formulas-as-types paradigm is only one of the possible
+incarnations of BHK, among others such as Kleene's realizability semantics).
+The first explicit statement was made by Curry in the 40s, and the
+correspondence was made precise for typed combinatory logic by Curry and Feys in
+their milestone monograph \cite{curry1958combinatory}, in the form of theorems
+giving a connection between provability and type inhabitation.
+
+The works of Curry, however, accounts only for one aspect of the isomorphism,
+namely the \emph{static} correspondence between propositions and types, as well
+as proof terms and $\lambda$-terms (or combinators). The other important aspect
+is \emph{dynamic}, and relates proof normalization in natural deduction and term
+reduction (computation) in typed lambda calculi. W. W. Tait is often credited
+for the discovery of this dynamic aspect of the correspondence, but an explicit
+statement of it did not occur until 1969, when the famous paper by Howard began
+to be privately circulated (it was actually published only in 1980). In
+\cite{howard:tfatnoc}, explicit emphasis on the relationship between reduction
+and normalization is made.
+
+Despite the isomorphism being associated with Curry and Howard, the work by
+N. G. De Bruijn on its tool Automath \cite{aut-001-1} represented a huge
+contribution, and was the first example of making an actual practical use of the
+ideas underlying the isomorphism. Automath was developed as a proof assistant
+for writing mathematical proofs so that they could be verified by a
+computer. Many fundamental concepts were for the first time used here, such as
+dependent types, with implication defined as a special case of the universal
+quantifier.
+
+The ultimate development of the isomorphism came with the work of Per
+Martin-Loef and its Intuitionistic Type Theory: the correspondence between
+propositions and types is brought to an extreme, to the point where propositions
+are \emph{identified} with types. In the following years, type theories, proof
+assistants and programming languages have been created following the idea of the
+Curry-Howard isomorphism, and inspired especially by Martin-Loef’s work. Notable
+examples are Coquand and Huet’s Calculus of Constructions \cite{COQUAND198895},
+the proof assistants Coq and Lego, and the dependently typed functional
+programming languages Agda \cite{Norell:2009:DTP:1481861.1481862} and Idris.
+
+From the point of view of categorical semantics, we discover yet another side of
+the same correspondence. Objects and morphisms correspond to types and terms,
+and also to formulas and proofs. This analogy was first discovered by Lawvere
+and Lambek, to that the correspondence is sometimes stated as the
+Curry-Howard-Lambek isomorphism. TODO: computational trinitarianism.
+
+
+\subsection{Multi-sorted natural deduction with explicit context}
+
+We now introduce explicit contexts, and see how they can be defined. In
+particular, we are going to introduce a new judgement
+
+\[
+  \gammactxt
+\]
+
+and explain how it can be derived:
+
+\[
+  \ctxtj{[]}
+  \qquad
+  \begin{prooftree}
+    \Gamma \vdash \propj{\varphi}
+    \justifies
+    \ctxtj{\Gamma, \tyj{u}{\varphi}}
+    \using{u \text{ fresh}}
+  \end{prooftree}
+  \qquad
+  \begin{prooftree}
+    \Gamma \vdash \setj{A}
+    \justifies
+    \ctxtj{\Gamma, \inj{x}{A}}
+    \using{x \text{ fresh}}
+  \end{prooftree}
+\]
+
+that is, our contexts may contain hypotheses on the existence of elements of
+sets and proofs of propositions, must the \emph{name} or \emph{tag} of each
+hypothesis must be unique in the context. This restriction ensures that when an
+assumption is removed from the context, it gets actually \emph{discharged} in
+the sense that it cannot be used further in the derivation.  The most basic use
+of an assumption is to assert it: if we assume $x$ is a proof of a proposition
+$A$, then we are entitled to assert that $A$ is true, hence
+
+\[
+  \begin{prooftree}
+    \ctxtj{\Gamma, \tyj{x}{\varphi}, \Gamma'}
+    \justifies
+    \Gamma, \tyj{x}{\varphi}, \Gamma' \vdash \truej{\varphi}
+  \end{prooftree}
+\]
+
+In the same way, if we assume that $\inj{x}{A}$, we may as well assert it:
+
+\[
+  \begin{prooftree}
+    \ctxtj{\Gamma, \inj{x}{A}, \Gamma'}
+    \justifies
+    \Gamma, \inj{x}{A}, \Gamma' \vdash \inj{x}{A}
+  \end{prooftree}
+\]
+
+Notice that we implicitly assume that the context formation jusgements are
+extended with their hypothetical forms, for example
+
+\[
+  \begin{prooftree}
+    \Gamma, \inj{x}{A}, \Gamma' \vdash \propj{\varphi(x)}
+    \justifies
+    \ctxtj{\Gamma, \inj{x}{A}, \Gamma', \tyj{u}{\varphi(x)}}
+  \end{prooftree}
+\]
+
+is a perfectly valid derivation, provided the variable $u$ did not already occur
+in the context. Notice, also, that from our definition it follows
+that in a context $\Gamma, \inj{x}{A}, \Gamma'$, $\Gamma$ neither contains
+$\inj{x}{A}$, nor it contains $x$ free. This property will come in handy when we
+introduce substitution in contexts.
+The complete natural deduction system for multi-sorted first-order
+intuitionistic logic with explicit contexts is shown in
+Figure~\ref{natded-explicit-context}.
+
+\begin{figure}[ht]
+\begin{mdframed}
+
+  \[
+    \begin{prooftree}
+      \Gamma \vdash \varphi \qquad \Gamma \vdash \psi
+      \justifies
+      \Gamma \vdash \andconn{\varphi}{\psi}
+    \end{prooftree}
+    \qquad
+    \begin{prooftree}
+      \Gamma \vdash \andconn{\varphi}{\psi}
+      \justifies
+      \Gamma \vdash \varphi
+    \end{prooftree}
+    \qquad
+    \begin{prooftree}
+      \Gamma \vdash \andconn{\varphi}{\psi}
+      \justifies
+      \Gamma \vdash \psi
+    \end{prooftree}
+  \]
+
+  \[
+    \begin{prooftree}
+      \Gamma \vdash \varphi
+      \justifies
+      \Gamma \vdash \orconn{\varphi}{\psi}
+    \end{prooftree}
+    \qquad
+    \begin{prooftree}
+      \Gamma \vdash \psi
+      \justifies
+      \Gamma \vdash \orconn{\varphi}{\psi}
+    \end{prooftree}
+    \qquad
+    \begin{prooftree}
+      \Gamma \vdash \orconn{\varphi}{\psi}
+      \quad
+      \Gamma, \tyj{u}{\varphi} \vdash C
+      \quad
+      \Gamma, \tyj{v}{\psi} \vdash C
+      \justifies
+      \Gamma \vdash C
+    \end{prooftree}
+  \]
+
+  \[
+    \begin{prooftree}
+      \Gamma, \tyj{u}{\varphi} \vdash \psi
+      \justifies
+      \Gamma \vdash \implconn{\varphi}{\psi}
+    \end{prooftree}
+    \qquad
+    \begin{prooftree}
+      \Gamma \vdash \implconn{\varphi}{\psi} \qquad \Gamma \vdash \varphi
+      \justifies
+      \Gamma \vdash \psi
+    \end{prooftree}
+  \]
+
+  \[
+    \begin{prooftree}
+      \Gamma, \inj{x}{A} \vdash \propj{\varphi(x)}
+      \quad
+      \Gamma, \inj{x}{A} \vdash \varphi(x)
+      \justifies
+      \Gamma \vdash \forallconn{x}{A}{\varphi(x)}
+    \end{prooftree}
+    \qquad
+    \begin{prooftree}
+      \Gamma \vdash \forallconn{x}{A}{\varphi(x)}
+      \quad
+      \Gamma \vdash \inj{t}{A}
+      \justifies
+      \Gamma \vdash \varphi(t)
+    \end{prooftree}
+  \]
+
+  \[
+    \begin{prooftree}
+      \begin{array}{@{}c}
+        \Gamma, \inj{x}{A} \vdash \propj{\varphi(x)} \\
+        \Gamma \vdash \varphi(t)
+        \qquad
+        \Gamma \vdash \inj{t}{A}  
+      \end{array}
+      \justifies
+      \Gamma \vdash \existsconn{x}{A}{\varphi(x)}
+    \end{prooftree}
+    \qquad
+    \begin{prooftree}
+      \begin{array}{@{}c}
+        \Gamma \vdash \propj{\psi}
+        \qquad
+        \Gamma \vdash \exists{x}{A}{\varphi(x)} \\
+        \Gamma, \inj{x}{A}, \tyj{y}{\varphi(x)} \vdash \psi
+      \end{array}
+      \justifies
+      \Gamma \vdash \psi
+    \end{prooftree}
+  \]
+  \[
+    \begin{prooftree}
+      \justifies
+      \Gamma \vdash \trueconn
+    \end{prooftree}
+    \qquad\qquad\qquad
+    \begin{prooftree}
+      \Gamma \vdash \falseconn
+      \justifies
+      \Gamma \vdash \varphi
+    \end{prooftree}
+  \]
+\end{mdframed}
+\caption{\label{natded-explicit-context} Natural deduction with explicit context.}
+\end{figure}
+
+\begin{example}
+  We show how the intuitionistically valid formula
+
+  \[
+    \varphi \vee (\forall x \in A)\psi(x) \rightarrow
+    (\forall x \in A)(\varphi \vee \psi(x))
+  \]
+
+  can be derived in our system, where $x$ is intended to be \emph{not} free in
+  $\varphi$.
+
+  \[
+    \begin{prooftree}
+      \[
+        \[
+          \Gamma \vdash \varphi \vee (\forall x \in A)\psi (x) \quad 
+          \[
+            \Gamma, \varphi \vdash \varphi
+            \justifies
+            \Gamma, \varphi \vdash \varphi \vee \psi (x)
+          \]
+          \[
+            \[
+              \Delta \vdash (\forall x \in A)\psi (x) \quad 
+              \Delta \vdash x \in A
+              \justifies
+              \Delta \vdash \psi (x)
+            \]
+            \justifies
+            \Delta \equiv \Gamma, (\forall x \in A)\psi (x) \vdash \varphi \vee \psi (x)
+          \]
+          \justifies
+          \Gamma \equiv \varphi \vee (\forall x \in A)\psi (x), x \in A \vdash \varphi \vee \psi (x)
+        \]
+        \justifies
+        \varphi \vee (\forall x \in A)\psi (x) \vdash (\forall x \in A)(\varphi \vee \psi (x))
+      \]
+      \justifies
+      \varphi \vee (\forall x \in A)\psi (x) \rightarrow (\forall x \in A)(\varphi \vee \psi (x))
+    \end{prooftree}
+  \]
+\end{example}
+
+\begin{example}
+  We have seen that, in the system of natural deduction with implicit
+  hypotheses, we must pay attention to the parameters involved in the rules of
+  $\forall$ introduction and $\exists$ elimination in order to avoid logical
+  absurdities to be derived. The alert reader may have noticed that there are no
+  side conditions of this sort in the rules with explicit contexts. This is
+  because the definition of context itself, which disallows the presence of
+  variables with the same name, takes care of such situations. As an example,
+  notice how the derivation of the invalid $\forall xy (P(x) \rightarrow P(y))$
+  gets blocked:
+
+  \[
+    \begin{prooftree}
+      \[
+        \[
+          \[ \justifies x \in A, y \in A, u : P(x) \vdash y \in A \] \quad 
+          \[
+            x \in A, y \in A, u : P(x), z \in A \vdash P(z)
+            \justifies
+            x \in A, y \in A, u : P(x) \vdash (\forall x \in A)P(x)
+          \]
+          \justifies
+          x \in A, y \in A, u : P(x) \vdash P(y)
+        \]
+        \justifies
+        x \in A, y \in A \vdash P(x) \rightarrow P(y)
+      \]
+      \justifies
+      \vdash (\forall x \in A)(\forall y \in A)(P(x) \rightarrow P(y))
+    \end{prooftree}
+  \]
+
+  Notice how there is no way to complete the right branch: we would be able to
+  derive it only in the case $x = z$, but this is not possible by the definition
+  of context, which requires the $\forall$ introduction rule to refer to a fresh
+  variable (in this case, $z$).
+
+  Consider another logical fallacy that can be derived if we ignore the variable
+  conditions of natural deduction:
+
+  \[
+    \begin{prooftree}
+      \[
+        \[
+          \[
+            \justifies
+            \exists x A
+            \using{u}
+          \] \quad 
+          \[
+            \justifies
+            A[w/x]
+            \using{v}
+          \]
+          \justifies
+          A[w/x]
+          \using{v}
+        \]
+        \justifies
+        \forall x A
+      \]
+      \justifies
+      \exists x A \rightarrow \forall x A
+    \end{prooftree}
+  \]
+
+  This derivation is \emph{not} valid, since the parameter $w$ used in the
+  discharged hypothesis of the existential elimination is free in the conclusion
+  of the rule. Notice how this incorrect development of the proof gets blocked
+  by the definition of context itself:
+
+  \[
+    \begin{prooftree}
+      \[
+        \[
+          \[
+            \justifies
+            (\exists x \in A) \varphi(x), x \in A \vdash (\exists x \in A)
+            \varphi(x)
+          \]
+          \quad 
+          (\exists x \in A) \varphi(x), x \in A, y \in A, \varphi(y) \vdash \varphi(x)
+          \justifies
+          (\exists x \in A) \varphi(x), x \in A \vdash \varphi(x)
+        \]
+        \justifies
+        (\exists x \in A) \varphi(x) \vdash (\forall x \in A)\varphi(x)
+      \]
+      \justifies
+      \vdash (\exists x \in A) \varphi(x) \rightarrow (\forall x \in A)\varphi(x)
+    \end{prooftree}
+  \]
+
+  The variable $y$ introduced by the existential elimination rule is forced to
+  be different from $x$, which is already in context. Hence, there is no way to
+  unify the hypothesis, which must be $\varphi(y)$, with the conclusion
+  $\varphi(x)$.
+
+\end{example}
+
+\begin{example}
+  A common misconception about intuitionistic logic in that it is in explicit
+  opposition to classical logic, to the point that typically classical
+  principles like LEM are provably false in it. This view is, of course, wrong,
+  since intuitionistic logic and in general constructive mathematics in the
+  Bishop sense are compatible with classical mathematics. In particular, observe
+  that $\neg \neg (A \vee \neg A)$ is an intuitionistic tautology:
+
+  \[
+    \begin{prooftree}
+      \[
+        \[\justifies (A \vee \neg A) \rightarrow \bot \using{u}\] \quad 
+        \[
+          \[
+            \[
+              \[\justifies (A \vee \neg A) \rightarrow \bot \using{u}\] \quad 
+              \[
+                \[ \justifies A \using{w} \]
+                \justifies
+                A \vee \neg A
+              \]
+              \justifies
+              \bot
+            \]
+            \justifies
+            A \rightarrow \bot
+            \using{w}
+          \]
+          \justifies
+          A \vee \neg A
+        \]
+        \justifies
+        \bot
+      \]
+      \justifies
+      \neg \neg (A \vee \neg A)
+    \end{prooftree}
+  \]
+  
+\end{example}
+
+\subsection{Proof terms}\label{proof-terms}
+
+We now see the \emph{static} nature of the Curry-Howard isomorphism, that is the
+correspondence between propositions (expressed as formulas) and types for
+$\lambda$-terms. This correspondence is just another way to reveal the
+connections (and differences) between language and meta-language: we
+\emph{construct proofs} of a proposition $\varphi$ in the same way as we
+\emph{derive} the \emph{judgement} $\truej{\varphi}$. The first is an
+internalization in the object language of the second, which is a feature of the
+meta-language.
+
+According to the BHK interpretation of intuitionistic logic, a proof of a
+proposition is an effective construction. Proof terms formalize this aspect,
+showing not only that a proposition is true, but also giving a construction for
+it. Writing $\tyj{p}{\varphi}$ for the judgement ``$p$ is a proof term of the
+proposition $\varphi$'', we have thus the following equivlence
+
+\[
+  \truej{\varphi} \quad \text{iff} \quad
+  \text{there exists } p \text{ such that } \tyj{p}{\varphi}
+\]
+
+Our proof terms need to be effective. Despite not formally binding ourselves to
+recursive functions (CT\footnote{Formal Church's Thesis. For an overview on
+  constructive axioms and their validity/consistency within constructive
+  theories, see Troelstra, Metamathematical Investigation of Intuitionistic
+  Arithmetic and Analysis, or Troelstra and van Dalen, Constructivism in
+  Mathematics vol. 1.} is not axiomatized in most constructive theories,
+although valid in some of their interpretations), we will construct them as
+terms of a typed $\lambda$-calculus.
+
+We extend our definition of contexts to allow assumptions about proofs of
+propositions:
+
+\[
+  \begin{prooftree}
+    \Gamma \vdash \propj{A}
+    \justifies
+    \ctxtj{\Gamma, \tyj{x}{A}}
+    \using{x \text{ fresh}}
+  \end{prooftree}
+\]
+
+We now extend our system of natural deduction with proof terms. We review the
+meaning of logical connectives according to the BHK interpretation, and see how
+to reflect it as proof terms.
+
+\paragraph{Conjunction}
+
+We know what counts as a proof of the proposition $\andconn{\varphi}{\psi}$,
+namely a proof of $\varphi$ and a proof of $\psi$. It makes sense for a proof
+term for the conjunction, therefore, to be a pair of proofs, one of $\varphi$
+and one of $\psi$:
+
+\[
+  \begin{prooftree}
+    \Gamma \vdash \tyj{M}{\varphi} \qquad \Gamma \vdash \tyj{N}{\psi}
+    \justifies
+    \Gamma \vdash \tyj{\pair{M}{N}}{\andconn{\varphi}{\psi}}
+  \end{prooftree}
+\]
+
+Then, it seems reasonable to extract the first or second of this pair of proofs
+by projection:
+
+\[
+  \begin{prooftree}
+    \Gamma \vdash \tyj{M}{\andconn{\varphi}{\psi}}
+    \justifies
+    \Gamma \vdash \tyj{\snd{M}}{\psi}
+  \end{prooftree}
+  \qquad
+  \begin{prooftree}
+    \Gamma \vdash \tyj{M}{\andconn{\varphi}{\psi}}
+    \justifies
+    \Gamma \vdash \tyj{\fst{M}}{\varphi}
+  \end{prooftree}
+\]
+
+\paragraph{Disjunction}
+
+A proof of a disjunction $\orconn{\varphi}{\psi}$ is a proof of $\varphi$ or a
+proof of $\psi$, together with the information telling us \emph{which one} of
+the two. The proof term then is the proof itself, with \emph{tags} telling us
+whether the proof refers to the first or the second disjunct, and what is the
+disjunct about which we are not saying anything:
+
+\[
+  \begin{prooftree}
+    \Gamma \vdash \tyj{M}{\varphi}
+    \justifies
+    \Gamma \vdash \tyj{\inleft{\psi}{M}}{\orconn{\varphi}{\psi}}
+  \end{prooftree}
+  \qquad
+  \begin{prooftree}
+    \Gamma \vdash \tyj{M}{\psi}
+    \justifies
+    \Gamma \vdash \tyj{\inright{\varphi}{M}}{\orconn{\varphi}{\psi}}
+  \end{prooftree}
+\]
+
+A proof of a disjunction is used by \emph{reading} the information on the term
+itself, and proving the conclusion by case analysis.
+
+\[
+  \begin{prooftree}
+    \begin{array}{@{}c}
+      \Gamma \vdash \propj{\chi}
+      \qquad
+      \Gamma \vdash \tyj{M}{\orconn{\varphi}{\psi}}
+      \\
+      \Gamma, \tyj{u}{\varphi} \vdash \tyj{d_1(u)}{\chi}
+      \qquad
+      \Gamma, \tyj{w}{\psi} \vdash \tyj{d_2(w)}{\chi}
+    \end{array}
+    \justifies
+    \Gamma \vdash \tyj{\orelimop{M}{(u)d_1}{(w)d_2}}{\chi}
+  \end{prooftree}
+\]
+
+Notice how the elimination specifically happens towards a single
+\emph{proposition} $\chi$, rather than a set or a family of sets. This
+happens for reasons that will be made clear when we introduce the
+existential quantification, which can be seen as a potentially
+infinite disjunction and thus a generalization of the binary case.
+
+\paragraph{Implication}
+
+A proof of an implication $\implconn{\varphi}{\psi}$ is understood to be a
+method, or operation, that yields a proof of $\psi$ given a proof of $\varphi$.
+
+\[
+  \begin{prooftree}
+    \Gamma, \tyj{x}{\varphi} \vdash \tyj{b(x)}{\psi}
+    \justifies
+    \Gamma \vdash \tyj{\implctor{x}{b(x)}}{\implconn{\varphi}{\psi}}
+  \end{prooftree}
+  \qquad
+  \begin{prooftree}
+    \Gamma \vdash \tyj{M}{\implconn{\varphi}{\psi}}
+    \qquad
+    \Gamma \vdash \tyj{N}{\varphi}
+    \justifies
+    \Gamma \vdash \tyj{\implelimop{M}{N}}{\psi}
+  \end{prooftree}
+\]
+
+\paragraph{Universal quantification}
+
+A similar situation is with universal quantification: a proof of
+$\forallconn{x}{A}{\varphi(x)}$ is an operation that yields a proof of
+$\varphi(x)$ given an element $x$ of the set $A$.
+
+\[
+  \begin{prooftree}
+    \Gamma, x \in A \vdash \propj{\varphi(x)}
+    \qquad
+    \Gamma, x \in A \vdash \tyj{b(x)}{\varphi (x)}
+    % \Gamma \vdash \tyj{M}{A[w/x]}
+    \justifies
+    \Gamma \vdash \tyj{\forallctor{w}{b(x)}}{\forallconn{x}{A}{\varphi(x)}}
+  \end{prooftree}
+\]
+
+To eliminate a universal quantification, it sufficies to provide an
+element of the set of quantification:
+
+\[
+  \begin{prooftree}
+    \Gamma \vdash \inj{t}{A}
+    \qquad
+    \Gamma \vdash \tyj{f}{\forallconn{x}{A}{\varphi(x)}}
+    \justifies
+    \Gamma \vdash \tyj{\forallelimop{f}{t}}{\varphi(t)}
+  \end{prooftree}
+\]
+
+\paragraph{Existential quantification}
+
+The rules of $\exists$ decorated with proof terms validate the usual
+interpretation of the intuitionistic existential quantifier as a ``package''
+containing an element of the set of quantification (a ``witness'') together with
+a proof that the predicate holds for the witness.
+
+\[
+  \begin{prooftree}
+    \Gamma, \inj{x}{A} \vdash \propj{\varphi(x)}
+    \quad
+    \Gamma \vdash \inj{t}{A}
+    \quad
+    \Gamma \vdash \tyj{p}{\varphi(t)}
+    \justifies
+    \Gamma \vdash \tyj{\pair{t}{p}}{\existsconn{x}{A}{\varphi(x)}}
+  \end{prooftree}
+\]
+
+Notice that, as for disjunction, the elimination rule of the existential
+quantifier eliminates only towards plain propositions without any form of
+dependency.
+
+\[
+  \begin{prooftree}
+    \Gamma \vdash \propj{\psi}
+    \qquad
+    \Gamma \vdash \tyj{M}{\existsconn{x}{A}{\varphi(x)}}
+    \qquad
+    \Gamma, x \in A, \tyj{y}{\varphi(x)} \vdash \tyj{N}{\psi}
+    \justifies
+    \Gamma \vdash \tyj{\existselimop{M}{(y)N}}{\psi}
+  \end{prooftree}
+\]
+
+This is the main technical difference between the existential quantifier and the
+$\Sigma$ set constructor (which coincide in their introduction rules). Indeed,
+one of the reasons to keep propositions and sets formally distinct is to be able
+to give a weaker notion of existential quantification than the one that comes
+from the identification of propositions and sets/types as in M-L, and in
+particular of the existential quantifier and the strong indexed sum set.
+
+Notice in fact that, interpreting $\forall$ and $\exists$ as the
+set-constructors $\Pi$ and $\Sigma$, one validates the axiom
+of choice, identifying functions (total set-valued relations) and operations
+(effective total procedures).
+
+\[
+  \implconn{
+    \forallconn{x}{A}{\existsconn{y}{B}{R(x,y)}}
+  }{
+    \existsconn{f}{A \rightarrow B}{\forallconn{x}{A}{R(x, f(x))}}
+  }
+\]
+
+Distinguishing between propositions and sets allows us to define a weaker notion
+of existential elimination, which blocks the validity of the axiom of choice
+while still modelling the usual intuitionistic logic. The details of all this
+will be made precise when we talk about the stratification of the theory in two
+levels of abstraction, and the need for compatibility of these levels with
+existing classical and constructive theories.
+
+On a final note, observe how the premise $\Gamma \vdash \propj{\psi}$ forces
+$\psi$ to \emph{not} depend on the parameter $x$ used in the second
+premise. This is to say that the rule automatically satisfies the side-condition
+of the usual natural deduction system that the parameter be not free in the
+conclusion.
+
+\paragraph{True and false}
+
+The proposition $\top$ is trivially true, therefore we fix a constant symbol
+$\star$ that denotes its unique, canonical proof.
+
+\[
+  \begin{prooftree}
+    \justifies
+    \Gamma \vdash \tyj{\star}{\trueconn}
+  \end{prooftree}
+\]
+
+The false proposition $\bot$ has no proof, hence, by \emph{ex falso quodlibet},
+if we are presented with a proof of it we might as well deduce anything.
+
+\[
+  \begin{prooftree}
+    \Gamma \vdash \tyj{M}{\falseconn}
+    \justifies
+    \Gamma \vdash \tyj{\falseelimop{A}{M}}{A}
+  \end{prooftree}
+\]
+
+Figure~\ref{natded-proofterms} show the complete formal system, where the
+obvious ``prop'' judgements are left implicit.
+
+\begin{figure}[ht]
+  \begin{mdframed}
+    \[
+      \begin{prooftree}
+        \Gamma \vdash \tyj{p}{\varphi} \qquad \Gamma \vdash \tyj{q}{\psi}
+        \justifies
+        \Gamma \vdash \tyj{\pair{p}{q}}{\andconn{\varphi}{\psi}}
+      \end{prooftree}
+      \qquad
+      \begin{prooftree}
+        \Gamma \vdash \tyj{p}{\andconn{\varphi}{\psi}}
+        \justifies
+        \Gamma \vdash \tyj{\fst{p}}{\varphi}
+      \end{prooftree}
+      \qquad
+      \begin{prooftree}
+        \Gamma \vdash \tyj{p}{\andconn{\varphi}{\psi}}
+        \justifies
+        \Gamma \vdash \tyj{\snd{p}}{\psi}
+      \end{prooftree}
+    \]
+    \[
+      \begin{prooftree}
+        \Gamma \vdash \tyj{p}{\varphi}
+        \justifies
+        \Gamma \vdash \tyj{\inleft{\psi}{p}}{\orconn{\varphi}{\psi}}
+      \end{prooftree}
+      \qquad
+      \begin{prooftree}
+        \Gamma \vdash \tyj{p}{\psi}
+        \justifies
+        \Gamma \vdash \tyj{\inright{\varphi}{p}}{\orconn{\varphi}{\psi}}
+      \end{prooftree}
+    \]
+    \[
+      \begin{prooftree}
+        \begin{array}{@{}c}
+          \Gamma \vdash \propj{\phi}
+          \qquad
+          \Gamma \vdash \tyj{p}{\orconn{\varphi}{\psi}}
+          \\
+          \Gamma, \tyj{x}{\varphi} \vdash \tyj{d_1(x)}{\phi}
+          \qquad
+          \Gamma, \tyj{x}{\psi} \vdash \tyj{d_2(x)}{\phi}
+        \end{array}
+        \justifies
+        \Gamma \vdash \tyj{\orelimop{p}{(x)d_1}{(x)d_2}}{\phi}
+        \using{\orelimrule}
+      \end{prooftree}
+    \]
+    \[
+      \begin{prooftree}
+        \Gamma, \tyj{x}{\varphi} \vdash \tyj{b(x)}{\psi}
+        \justifies
+        \Gamma \vdash \tyj{\implctor{x}{b(x)}}{\implconn{\varphi}{\psi}}
+      \end{prooftree}
+      \qquad
+      \begin{prooftree}
+        \Gamma \vdash \tyj{p}{\implconn{\varphi}{\psi}}
+        \qquad
+        \Gamma \vdash \tyj{q}{\varphi}
+        \justifies
+        \Gamma \vdash \tyj{\implelimop{p}{q}}{\psi}
+      \end{prooftree}
+    \]
+    \[
+      \begin{prooftree}
+        \begin{array}{@{}c}
+          \Gamma, x \in A \vdash \propj{\varphi(x)} \\
+          \Gamma, x \in A \vdash \tyj{b(x)}{\varphi (x)}  
+        \end{array}
+        \justifies
+        \Gamma \vdash \tyj{\forallctor{w}{b(x)}}{\forallconn{x}{A}{\varphi(x)}}
+      \end{prooftree}
+      \qquad
+      \begin{prooftree}
+        \begin{array}{@{}c}
+          \Gamma, \inj{x}{A} \vdash \propj{\varphi(x)} \\
+          \Gamma \vdash \inj{t}{A}
+          \qquad
+          \Gamma \vdash \tyj{p}{\forallconn{x}{A}{\varphi(x)}}
+        \end{array}
+        \justifies
+        \Gamma \vdash \tyj{\forallelimop{p}{t}}{\varphi(t)}
+      \end{prooftree}
+    \]
+    \[
+      \begin{prooftree}
+        \begin{array}{@{}c}
+          \Gamma, \inj{x}{A} \vdash \propj{\varphi(x)} \\  
+          \Gamma \vdash t \in A
+          \quad
+          \Gamma \vdash \tyj{p}{\varphi(t)}
+          \end{array}
+        \justifies
+        \Gamma \vdash \tyj{\pair{t}{p}}{\existsconn{x}{A}{\varphi(x)}}
+      \end{prooftree}
+      \qquad
+      \begin{prooftree}
+        \begin{array}{@{}c}
+          \Gamma \vdash \propj{\psi} \\
+          \Gamma \vdash \tyj{p}{\existsconn{x}{A}{\varphi(x)}}\\
+          \Gamma, x \in A, \tyj{y}{\varphi(x)} \vdash \tyj{q}{\psi}
+        \end{array}
+        \justifies
+        \Gamma \vdash \tyj{\existselimop{p}{(y)q}}{\psi}
+      \end{prooftree}
+    \]
+  \end{mdframed}
+  \caption{\label{natded-proofterms} Natural deduction with proof terms.}
+\end{figure}
+
+\begin{example}
+
+  Below is a derivation of the intuitionistically valid proposition
+
+  \[
+    (\psi \rightarrow \chi) \rightarrow (\varphi \rightarrow \psi)
+    \rightarrow \varphi \rightarrow \chi
+  \]
+
+  \[
+    \begin{prooftree}
+      \[
+        \[
+          \[
+            f \in ..., ... \vdash f \in ... \quad 
+            \[
+              ... \vdash g \in \varphi \rightarrow \psi \quad 
+              ... \vdash x \in \varphi
+              \justifies
+              ... \vdash Ap(g,x) \in \psi
+            \]
+            \justifies
+            f \in ..., g \in ..., x \in \varphi \vdash Ap(f, Ap(g,x)) \in \chi
+          \]
+          \justifies
+          f \in ..., g \in \varphi \rightarrow \psi \vdash \lambda x . Ap(f, Ap(g,x)) \in \varphi \rightarrow \chi
+        \]
+        \justifies
+        f \in \psi \rightarrow \chi \vdash \lambda g x . Ap(f, Ap(g,x)) \in (\varphi \rightarrow \psi) \rightarrow \varphi \rightarrow \chi
+      \]
+      \justifies
+      \vdash \lambda f g x . Ap(f, Ap(g,x)) \in (\psi \rightarrow \chi) \rightarrow (\varphi \rightarrow \psi)
+    \rightarrow \varphi \rightarrow \chi
+    \end{prooftree}
+  \]
+
+  The proof term of this proposition corresponds to the $B$ combinator in
+  combinatory logic, which performs function composition. In fact, notice how
+
+  \[
+    B f g x = f(g(x))
+  \]
+
+\end{example}
+
+\begin{example}
+
+  Below is a derivation with proof terms of the intuitionistically valid
+  proposition
+
+  \[
+    (\exists x \in A)\varphi(x) \rightarrow
+    \neg (\forall x \in A)\neg \varphi(x)
+  \]
+  
+  \[
+    \begin{prooftree}
+      \[
+        \[
+          e \in ..., ... \vdash e \in ... \quad 
+          \[
+            \[
+              e \in ..., f \in ... \vdash f \in ... \quad 
+              x \in A, ... \vdash x \in A
+              \justifies
+              ... \vdash Ap(f,x) \in \varphi(x) \rightarrow \bot
+            \] \quad 
+            ..., y \in \varphi(x) \vdash y \in \varphi(x)
+            \justifies
+            e \in ..., f \in ..., x \in A, y \in \varphi(x) \vdash Ap(Ap(f,x),y) \in \bot
+          \]
+          \justifies
+          e \in ..., f \in (\forall x \in A)(\varphi(x) \rightarrow \bot) \vdash E(e, (x,y)Ap(Ap(f,x),y)) \in \bot
+        \]
+        \justifies
+        e \in (\exists x \in A)\varphi(x) \vdash \lambda f . E(e, (x,y)Ap(Ap(f,x),y)) \in [(\forall x \in A)(\varphi(x) \rightarrow \bot)] \rightarrow \bot
+      \]
+      \justifies
+      \vdash \lambda e f . E(e, (x,y)Ap(Ap(f,x),y)) \in (\exists x \in A)\varphi(x) \rightarrow
+    \neg (\forall x \in A)\neg \varphi(x)
+    \end{prooftree}
+  \]
+\end{example}
+
+\begin{example}
+
+  Below is a derivation with proof terms of the intuitionistically valid
+  proposition
+
+  \[
+    (\forall x \in A)(\varphi(x) \rightarrow \psi(x))
+    \rightarrow
+    ((\exists x \in A)\varphi(x) \rightarrow (\exists x \in A)\psi(x))
+  \]
+
+  \[
+    \begin{prooftree}
+      \[
+    \[
+      ..., e \in ... \vdash e \in ...
+      \[
+        \[
+          \[
+            ..., f \in ..., ... \vdash f \in ...
+            \quad
+            ..., x \in A, ... \vdash x \in A
+          \justifies
+            ..., f \in ..., ... \vdash Ap(f,x) \in \varphi(x) \rightarrow \psi(x)
+          \]
+          \quad ..., y \in \varphi(x) \vdash y \in \varphi(x)
+        \justifies
+          ..., x \in A, y \in \varphi(x) \vdash Ap(Ap(f,x),y) \in \psi(x)
+        \]
+        ..., x \in A, ... \vdash x \in A
+        \justifies
+        ..., x \in A, y \in \varphi(x) \vdash <x, Ap(Ap(f,x),y)> \in (\exists x \in A)\psi(x)
+      \]
+    \justifies
+      f \in ..., e \in (\exists x \in A)\varphi(x) \vdash E(e, (x,y)<x, Ap(Ap(f,x),y)>) \in (\exists x \in A)\psi(x)
+    \]
+  \justifies
+    f \in (\forall x \in A)(\varphi(x) \rightarrow \psi(x)) \vdash \lambda e . E(e, (x,y)<..>) \in (\exists \rightarrow \exists)
+  \]
+\justifies
+  \vdash \lambda f e . E(...) \in (\forall x \in A)(\varphi(x) \rightarrow \psi(x))
+    \rightarrow
+    ((\exists x \in A)\varphi(x) \rightarrow (\exists x \in A)\psi(x))
+    \end{prooftree}
+  \]
+\end{example}
+
+\subsection{Proof normalization}
+
+
+Out treatise of proof normalization starts with the observation that an
+elimination rule in our system is, in a sense, the inverse of the corresponding
+introduction rule: by an application of an elimination rule one essentially only
+restores what had already been established if the major premise of the
+application was inferred by an application of an introduction rule. The essence
+is that in such situations, the pair of applications of the introduction rule
+followed by the elimination rule can be eliminated, because the deduction of the
+conclusion can be obtained from their premises. Prawitz calls this the
+\emph{inversion principle} in \cite{prawitz1965}. The same idea is expressed by
+Pfenning in \cite{pfenninglecturescl}, by saying that the elimination rules of
+natural deduction are \emph{not too strong}.
+
+\subsubsection{Digression on substitution rules}
+
+To illustrate proof transformations, we are going to need two essential
+structural rules to deal with substitutions. Consider a derivation $\mathcal{D}$
+depending on some variable $x$ of type $A$. In our system, we depict this as
+
+\[
+  \begin{array}{@{}c}
+    \mathcal{D} \\
+    \Gamma, \inj{x}{A}, \Gamma'(x) \vdash \varphi(x)
+  \end{array}
+\]
+
+It seems reasonable to consider a derivation $\mathcal{D}'$ which is just
+$\mathcal{D}$ with some term $\inj{t}{A}$ in place of $x$, and expect it to be
+derivable as well.
+
+\[
+  \begin{array}{@{}c}
+    \mathcal{D}' \\
+    \Gamma, \Gamma'(t) \vdash \varphi(t)
+  \end{array}
+\]
+
+\begin{lemma}
+  The \emph{substitution rule}
+
+  \[
+    \begin{prooftree}
+      \Gamma, \inj{x}{A}, \Gamma'(x) \vdash \varphi(x)
+      \qquad
+      \inj{t}{A}
+      \justifies
+      \Gamma, \Gamma'(t) \vdash \varphi(t)
+      \using{sost}
+    \end{prooftree}
+  \]
+
+  is admissible.
+\end{lemma}
+\begin{proof}
+  Left as exercise.
+\end{proof}
+
+The same goes for derivations. Suppose we have a derivation of $\psi$ on the
+basis of some assumptions $\Gamma$ and an assumption for $\varphi$, and suppose
+we were also able to show $\varphi$ from the same assumptions $\Gamma$.
+
+\[
+  \Gamma, \varphi \vdash \psi \qquad \qquad \Gamma \vdash \varphi
+\]
+
+Then, we should be able to derive $\psi$ from $\Gamma$ alone, since the other
+assumption $\varphi$ is already a consequence of $\Gamma$.
+
+\begin{lemma}
+  The \emph{cut rule}
+
+  \[
+    \begin{prooftree}
+      \Gamma, \varphi \vdash \psi
+      \qquad
+      \Gamma \vdash \varphi
+      \justifies
+      \Gamma \vdash \psi
+    \end{prooftree}
+  \]
+
+  is admissible.
+\end{lemma}
+\begin{proof}
+  Direct consequence of cut elimination for sequent calculus.
+\end{proof}
+
+\subsubsection{Detour conversions}
+
+Consider the following derivation:
+
+\[
+  \begin{prooftree}
+    \[
+      \begin{array}{@{}c}
+        \mathcal{D} \\
+        \Gamma, A \vdash B  
+      \end{array}
+      \justifies
+      \Gamma \vdash \implconn{A}{B}
+    \] \quad
+    \begin{array}{@{}c}
+      \mathcal{D'}
+      \Gamma \vdash A
+    \end{array}
+    \justifies
+    \Gamma \vdash B
+  \end{prooftree}
+\]
+
+It is quite clear that introducing $\implconn{A}{B}$ and then immediately
+eliminating it is a redundancy. Such a detour could have been avoided by simply
+replacing the assumption for $A$ in $\mathcal{D}$ with the actual derivation in
+$\mathcal{D'}$. More formally:
+
+\[
+  \begin{prooftree}
+    \begin{array}{@{}c}
+      \mathcal{D'} \\
+      \Gamma \vdash A
+    \end{array}
+    \quad
+    \begin{array}{@{}c}
+      \mathcal{D} \\
+      \Gamma, A \vdash B  
+    \end{array}
+    \justifies
+    \Gamma \vdash B
+  \end{prooftree}
+\]
+
+It turns out that such redundant applications of introduction rule followed by
+elimination rule with the formula just introduced as major premise, also called
+\emph{detours}, can be removed from derivations in a systematic way. We show how
+to perform such \emph{local reductions} for each connective:
+
+\paragraph{Conjunction}
+
+A \emph{detour} on a conjunction simply reduces to either one of the premises of
+the introduction rule, depending on the formula that is the conclusion of the
+elimination rule.
+
+\[
+  \begin{prooftree}
+    \[
+      \ndderives{\mathcal{D}}{\Gamma \vdash A}
+      \qquad
+      \ndderives{\mathcal{E}}{\Gamma \vdash B}
+      \justifies
+      \Gamma \vdash A \wedge B
+    \]
+    \justifies
+    \Gamma \vdash A
+  \end{prooftree}
+  \qquad \leadsto \qquad
+  \ndderives{\mathcal{D}}{\Gamma \vdash A}
+\]
+
+and similarly
+
+\[
+  \begin{prooftree}
+    \[
+      \ndderives{\mathcal{D}}{\Gamma \vdash A}
+      \qquad
+      \ndderives{\mathcal{E}}{\Gamma \vdash B}
+      \justifies
+      \Gamma \vdash A \wedge B
+    \]
+    \justifies
+    \Gamma \vdash B
+  \end{prooftree}
+  \qquad \leadsto \qquad
+  \ndderives{\mathcal{E}}{\Gamma \vdash B}
+\]
+
+\paragraph{Disjunction}
+
+An elimination of a disjunction contains proofs of the conclusion for the two
+possible cases, since it is not known \emph{a priori} which of the two disjoints
+holds. If we have a derivation $\mathcal{D}$ of the formula that introduced the
+disjunction, all information is already in our hands, so we can just take the
+corresponding proof of the conclusion and compose it with $\mathcal{D}$.
+
+\[
+  \begin{prooftree}
+    \[
+      \ndderives{\mathcal{D}}{\Gamma \vdash A}
+      \justifies
+      \Gamma \vdash A \vee B
+    \]
+    \qquad
+    \derives{\mathcal{E}}{\Gamma, A \vdash C}
+    \qquad \Gamma, B \vdash C
+    \justifies
+    \Gamma \vdash C
+  \end{prooftree} \qquad \leadsto \qquad
+  \begin{prooftree}
+    \ndderives{\mathcal{D}}{\Gamma \vdash A}
+    \qquad
+    \ndderives{\mathcal{E}}{\Gamma, A \vdash C}
+    \justifies
+    \Gamma \vdash C
+  \end{prooftree}
+\]
+
+and similarly
+
+\[
+  \begin{prooftree}
+    \[
+      \ndderives{\mathcal{D}}{\Gamma \vdash B}
+      \justifies
+      \Gamma \vdash A \vee B
+    \]
+    \qquad
+    \Gamma, A \vdash C
+    \qquad
+    \derives{\mathcal{E}}{\Gamma, B \vdash C}
+    \justifies
+    \Gamma \vdash C
+  \end{prooftree} \qquad \leadsto \qquad
+  \begin{prooftree}
+    \ndderives{\mathcal{D}}{\Gamma \vdash B}
+    \qquad
+    \ndderives{\mathcal{E}}{\Gamma, B \vdash C}
+    \justifies
+    \Gamma \vdash C
+  \end{prooftree}
+\]
+
+\paragraph{Implication}
+
+In order to eliminate an implication $\implconn{\varphi}{\psi}$ to derive
+$\psi$, we must possess a proof of the antecedent $\varphi$. If the implication
+has been derived by introduction, that means we were able to show a derivation
+$\mathcal{D}$ of the conclusion $\psi$ from the assumption $\varphi$. But then,
+we might just compose $\mathcal{D}$ with the derivation of $\varphi$ that we
+already have:
+
+\[
+  \begin{prooftree}
+    \[
+      \ndderives{\mathcal{D}}{\Gamma, A \vdash B}
+      \justifies
+      \Gamma \vdash A \supset B
+    \]
+    \qquad
+    \derives{\mathcal{E}}{\Gamma \vdash A}
+    \justifies
+    \Gamma \vdash B
+  \end{prooftree}\qquad \leadsto \qquad
+  \begin{prooftree}
+    \ndderives{\mathcal{D}}{\Gamma, A \vdash B}
+    \qquad
+    \ndderives{\mathcal{E}}{\Gamma \vdash A}
+    \justifies
+    \Gamma \vdash B
+  \end{prooftree}
+\]
+
+\paragraph{Universal quantification}
+
+A detour involving a universal quantification is a proof of $\varphi(t)$ for
+some term $\inj{t}{A}$ and predicate $\varphi$ on $A$, where the eliminated
+universal quantification has been established by a previous derivation of
+$\varphi(w)$ for a parameter $w$ that is free in all undischarged
+assumptions. It follows that we can just substitute $t$ for $w$ in the
+derivation of $\varphi(w)$, and get to the same conclusion.
+
+\[
+  \begin{prooftree}
+    \[
+      \ndderives{\mathcal{D}}{\Gamma, \inj{w}{A} \vdash \varphi(w)}
+      \justifies
+      \Gamma \vdash \forallconn{x}{A}{\varphi(x)}
+    \]
+    \qquad
+    \derives{\mathcal{E}}{\Gamma \vdash \inj{t}{A}}
+    \justifies
+    \Gamma \vdash \varphi(t)
+  \end{prooftree} \qquad \leadsto \qquad
+  \begin{prooftree}
+    \ndderives{\mathcal{D}}{\Gamma, \inj{w}{A} \vdash \varphi(w)}
+    \quad
+    \ndderives{\mathcal{E}}{\Gamma \vdash \inj{t}{A}}
+    \justifies
+    \Gamma \vdash \varphi(w)[t/w]
+    \using{sost}
+  \end{prooftree}
+\]
+
+where $\varphi(w)[t/w] \equiv \varphi(t)$, which gives us the conclusion. This
+result is actually quite obvious: as the universal quantifier is an
+internalization of a meta-level universal quantification, it does not really
+matter if we instantiate $\varphi$ on the basis on the object- or meta- level
+quantification.
+
+\paragraph{Existential quantification}
+
+We prove a proposition $\psi$ from $\existsconn{x}{A}{\varphi(x)}$ if we can
+show a derivation $\mathcal{E}$ for $\psi$ from the assumption that $\varphi(x)$
+holds for a fresh parameter $x$. That is, $\mathcal{E}$ is parametric in $x$. It
+follows that replacing $x$ for another term $t$ in $\mathcal{E}$ does not change
+its ability to show $\psi$ true. Now, if the existential has been derived by
+introduction, we possess a derivation of $\varphi(t)$ for some term
+$\inj{t}{A}$. We can therefore just compose this derivation with $\mathcal{E}$,
+to get a derivation of the conclusion without the detour.
+
+\[
+  \begin{prooftree}
+    \[
+      \ndderives{\mathcal{D}}{\Gamma \vdash A(t)}
+      \qquad
+      \ndderives{\mathcal{D'}}{\Gamma \vdash \inj{t}{A}}
+      \justifies
+      \Gamma \vdash \existsconn{x}{A}{\varphi(x)}
+    \]
+    \qquad
+    \derives{\mathcal{E}}{\Gamma, \inj{w}{A}, \varphi(w) \vdash \psi}
+    \justifies
+    \Gamma \vdash B
+  \end{prooftree}
+\]
+\[
+  \qquad \leadsto \qquad
+  \begin{prooftree}
+    \derives{\mathcal{D}}{\Gamma \vdash A(t)}
+    \qquad
+    \[
+      \ndderives{\mathcal{D'}}{\Gamma \vdash \inj{t}{A}}
+      \qquad
+      \ndderives{\mathcal{E}}{\Gamma, \inj{w}{A}, \varphi(w) \vdash \psi}
+      \justifies
+      \Gamma, \varphi(t) \vdash \psi[t/w] \equiv \psi
+      \using{sost}
+    \]
+    \justifies
+    \Gamma \vdash \psi
+  \end{prooftree}
+\]
+
+This leads us to a \footnote{we say ``a'' instead of ``the'' because most
+  proof-theoretical studies on the normalization of natural deduction consider
+  proof reductions that eliminate additional forms of redundancy than that of
+  detours. For our purposes, however, it sufficies to consider detour-free
+  derivations. For details we refer to the bibliography on the topic, which is
+  pointed out at the end of the section.} definition of normal deduction.
+
+\begin{definition}
+  A \emph{normal deduction} is a deduction in which no \emph{detours} occur.
+\end{definition}
+
+The following important theorem holds.
+
+\begin{theorem}[Normalization theorem]
+  If $\Gamma \vdash \varphi$ holds in the system of intuitionistic natural
+  deduction, then there is a normal deduction of $\varphi$ from $\Gamma$ in this
+  system.
+\end{theorem}
+\begin{proof}
+  By adapting the proof of Theorem 1 in \cite{prawitz1965}, which is a stronger
+  statement.
+\end{proof}
+
+The above theorem states that every natural deduction proof can be reduced to a
+normal proof. This property is also called \emph{weak normalization}. Actually,
+the calculus can be proved to have a stronger property, that of \emph{strong
+  normalization}: not only there exists a particular way to normalize a proof,
+but \emph{every} possible normalization process, or sequence of reduction steps,
+terminates to the \emph{same} normal proof.
+
+\subsubsection{Form of normal deductions}
+
+We will now prove a theorem that holds for closed normal deductions, which will
+be essential to justify the meaning of proof terms for natural deduction given
+in Section~\ref{proof-terms}.
+
+\begin{definition}
+  A \emph{main branch} of a derivation is a branch which starts from a top node
+  (a leaf of the derivation, if seen as a tree), ends in the conclusion, and in
+  which nodes (apart from the last) are either premises of introduction rules or
+  major premises of elimination rules.
+\end{definition}
+
+\begin{proposition}
+  Every deduction has a main branch.
+\end{proposition}
+\begin{proof}
+  By straightforward induction on the height of the derivation. Here are some
+  representative cases:
+
+  \begin{enumerate}
+  \item The base case in the derivation which assumes $\varphi$ as hypothesis
+    and asserts it. In this case, the main branch in trivially the formula
+    $\varphi$ itself;
+  \item The last rule is $\andintrorule$:
+
+    \[
+      \begin{prooftree}
+        \begin{array}{@{}c}
+          \mathcal{D} \\
+          \varphi
+        \end{array}
+        \quad
+        \begin{array}{@{}c}
+          \mathcal{E} \\
+          \psi
+        \end{array}
+        \justifies
+        \andconn{\varphi}{\psi}
+      \end{prooftree}
+    \]
+
+    Then, both $\mathcal{D}$ and $\mathcal{E}$ have main branches $\pi_1$ and
+    $\pi_2$ respectively. The main branch for the whole derivation is
+    constructed by appending $\andconn{\varphi}{\psi}$ to either $\pi_1$ or
+    $\pi_2$.
+    
+  \item The last rule is $\implelimrule$:
+
+    \[
+      \begin{prooftree}
+        \begin{array}{@{}c}
+          \mathcal{D} \\
+          \implconn{\varphi}{\psi}
+        \end{array}
+        \quad
+        \begin{array}{@{}c}
+          \mathcal{E} \\
+          \varphi
+        \end{array}
+        \justifies
+        \psi
+      \end{prooftree}
+    \]
+
+    Here, again, both $\mathcal{D}$ and $\mathcal{E}$ have main branches $\pi_1$
+    and $\pi_2$ respectively, but a main branch for the whole derivation can
+    only be constructed by appending $\psi$ to $\pi_1$.
+  \end{enumerate}
+\end{proof}
+
+\begin{lemma}\label{elimintrolemma}
+  Let $\mathcal{D}$ be a detour-free deduction. Then, every main branch is
+  formed by a sequence of elimination rules followed by a sequence of
+  introduction rules.
+\end{lemma}
+\begin{proof}
+  Suppose there exists a main branch of $\mathcal{D}$ violating the above
+  condition. Then, we can find a sequence of introduction rules preceeding an
+  elimination rule. The conclusion of the last of such introduction rules
+  constitutes the major premise of the following elimination rule, by definition
+  of main branch, and therefore it forms a detour. But this is in contradiction
+  with the hypothesis that $\mathcal{D}$ is detour-free.
+  \footnote{
+    The reasoning of this proof may seem rather unconstructive given the usage
+    of classical devices such as $\implconn{\neg \neg \varphi}{\varphi}$. We
+    recall, however, that the proof is about properties of finite structures
+    (derivation trees), which are decidable. Classical reasoning is
+    constructively admissible when only decidable predicates are involved.}
+\end{proof}
+
+\begin{lemma}\label{mainbranchassumptionlemma}
+  Consider a derivation $\mathcal{D}$ of $\varphi$ from assumptions $\Gamma$,
+  that is, $\Gamma \vdash \varphi$. Then, if $\pi$ is a main branch of
+  $\mathcal{D}$ involving only major premises of elimination rules, it
+  starts from a hypothesis in $\Gamma$.
+\end{lemma}
+\begin{proof}
+  It sufficies to observe that no elimination rule discharges assumptions in the
+  branch of the major premise. The thesis follows immediately.
+\end{proof}
+
+\begin{theorem}\label{canonicalproofthrm}
+  Let $\mathcal{D}$ be a closed detour-free derivation of $\varphi$, that is a
+  normal derivation of $\vdash \varphi$. Then, the conclusion of $\mathcal{D}$
+  has been derived by an introduction rule.
+\end{theorem}
+\begin{proof}
+  Suppose $\mathcal{D}$ begins with an elimination rule. Then, by
+  Lemma~\ref{elimintrolemma}, all main branches of the major premise of the
+  elimination rule, and by definition of main branch, all main branches of
+  $\mathcal{D}$ involve exclusively major premises of elimination rules. From
+  Lemma~\ref{mainbranchassumptionlemma}, all such main branches start from an
+  undischarged assumption of $\mathcal{D}$. But by hypothesis, there are no
+  assumptions.
+\end{proof}
+
+Theorem~\ref{canonicalproofthrm}, together with the normalization theorem,
+essentially says that every closed proof of a proposition $\varphi$ can be
+mechanically reduced in a finite amount of time to a \emph{canonical proof},
+that is, one in which $\varphi$ is proved by the introduction rule of its
+outermost connective. Notice that a byproduct of this result is the consistency
+of the logical calculus:
+
+\begin{theorem}
+  Natural deduction for intuitionistic predicate logic is consistent, that is,
+  it cannot prove $\bot$.
+\end{theorem}
+\begin{proof}
+  Suppose there is a proof of $\bot$. Then, there is a normal proof, which has
+  an introduction rule as last rule. But no rule introduces $\bot$.
+\end{proof}
+
+\subsection{Normalization as computation}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../notes"
+%%% End:
