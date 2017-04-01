@@ -21,6 +21,7 @@
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{definition}{Definition}[section]
 \newtheorem{lemma}{Lemma}[section]
+\newtheorem{notation}{Notation}[section]
 
 \newcommand{\strong}[1]{\textbf{#1}}
 \newcommand{\hsetj}[2]{#1 \; \text{set} \; (#2)}
@@ -31,10 +32,17 @@
 \newcommand{\seteqj}[2]{#1 = #2}
 \newcommand{\hseteqj}[3]{#1 = #2 \; (#3)}
 \newcommand{\inj}[2]{#1 \in #2}
+\newcommand{\insub}[0]{\varepsilon}
+\newcommand{\injsub}[2]{#1\ \insub\ #2}
+\newcommand{\injsubexpl}[3]{#1\ \insub_{#2}\ #3}
+\newcommand{\notinjsub}[2]{#1 \not\insub #2}
+\newcommand{\hpropj}[2]{#1 \; \text{prop} \; (#2)}
 \newcommand{\NN}{\mathbb{N}}
 \newcommand{\natrec}[3]{\textsf{R}(#1, #2, #3)}
 \newcommand{\ap}[2]{\textsf{Ap}(#1, #2)}
 \newcommand{\abs}[2]{(\lambda #1)(#2)}
+\newcommand{\setpow}[1]{\mathcal{P}#1}
+\newcommand{\complset}[1]{\overline{#1}}
 
 \newcommand{\ndderives}[2]{
   \begin{array}{@{}c}
@@ -107,3 +115,6 @@
 \newcommand{\existsconn}[3]{(\exists \inj{#1}{#2})#3}
 \newcommand{\trueconn}{\top}
 \newcommand{\falseconn}{\bot}
+
+\newcommand{\newdefn}[1]{\textbf{#1}} % Use this whenever a new concept is
+% defined
