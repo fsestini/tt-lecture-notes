@@ -114,5 +114,5 @@
 \newcommand{\trueconn}{\top}
 \newcommand{\falseconn}{\bot}
 
-\newcommand{\newdefn}[1]{\textbf{#1}} % Use this whenever a new concept is defined
-
+\newcommand{\newdefn}[1]{\textbf{#1}} % Use this whenever a new concept is
+% defined
