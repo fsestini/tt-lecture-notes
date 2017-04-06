@@ -292,6 +292,295 @@ equality between operations is extensional:
   p = q \iff \forallconn{x,y}{X}{p(x) = q(x)}
 \]
 
+\subsection{Operations on subsets}
+
+We've introduced operations as an effective sequence of instructions.
+We now discuss operations on subsets and their properties.
+
+\begin{definition}[Injective operation] We call an operation
+  \newdefn{injective} or \emph{one-one} iff \(O\ p =_Q O\ p'\) implies \(p
+  =_P p'\).
+\end{definition}
+
+This is the familiar definition of injectivity from classical
+mathematics.
+
+\begin{definition}[Surjective operation] We call an operation
+  \newdefn{surjective} when \((\forall q : Q)(\exists p : P) (Op =_Q
+  q)\)
+\end{definition}
+
+% If \(P\) is a set we say that \(Q\) is indexed by a set \(P\).
+First, recall that operations on collections are \emph{compositional}:
+% TODO "recall", but has it been introduced before?
+
+for a pair of operations
+
+\[ O\ p: Q(p:P) \]
+\[ O'\ q: Q'(q:Q) \]
+
+we can define their composition as
+
+\[ \compos{O'}{O' p} \equiv O'(O(p)) : Q'(p : P) \]
+
+We say an operation $O$ is ``\newdefn{strongly onto}'' when there
+exists an operation \(O'\) such that \(\compos{O'}{O} = \ident_Q\).
+
+We keep the two separate because we don't assume the axiom of choice.
+
+\begin{definition}[Bijective operation] Finally, we call an operation
+  \newdefn{bijective} when it's injective and strongly onto.
+\end{definition}
+
+% Todo explain how surjective is not enough
+
+\footnote{ One may wonder whether there is such a notion as ``strongly
+  1:1''.
+
+  % TODO: something? something what?
+  
+  In category theory something that satisfies \(\compos{O'}{O} =
+  \ident_P\) is called \strong{split mono} and \strong{split epi} something that
+  that satisfies \(\compos{O}{O'} = \ident_Q\).
+
+  We avoid this choice of naming, as we don't want to suggest we are
+  using cat theory.
+
+  However, our notion of ``strongly onto'' is akin to the notion of
+  split epi in cat theory.
+
+  Therefore, the notion of \newdefn{strongly 1:1} could be the
+  property of satisfying \(\compos{O}{O'} = \ident_Q\),
+  \(\compos{O'}{O} = \ident_P\) }
+
+
+It is worth noting how being a bijection implies being 1:1 and onto,
+but not the other way around.
+
+We call "bijection" something for which we have an \emph{effective}
+inverse operation.
+
+This is not the case with the ``classical'' definition of
+surjectivity, which assumes there \emph{is} a way back by AC!
+
+% TODO: explain \(\exists x ( D = \{x \})\) thing
+
+\subsubsection{Operations and relations} % TODO merge with previous
+subsubsection about operations and relations?
+
+An important example of a bijection is the one that holds between the
+collection of relations from $X$ to $S$ and the collection of
+operations from $X$ to $\setpow{S}$:
+
+\[ \Rel{X}{S} \sim \Op{X}{\setpow{S}} \]
+
+We show how it can be constructed in each direction.
+
+\begin{enumerate}
+\item First we see how an element of $\Rel{X}{S}$ can be constructed
+  from an element of $\Op{X}{\setpow{S}}$.
+
+  An operation from $X$ to $\setpow{S}$ is family of subsets - for
+  each $x \in X$ there is a unary proposition \(U_x\) which yields a
+  subset:
+
+  \[ U_x \subseteq S (x \in X) \]
+
+  Recall that a relation from $X$ to $S$ is a \emph{binary}
+  proposition with arguments $x$ and $a$.
+
+  We can always construct $R(x,a)$ in the following way:
+
+  \[ R(x,a) \equiv U_x(a) \equiv \injsub{a}{U_x} \]
+  \[ R(x,a) \leftrightarrow \injsub{a}{\{\inj{b}{S} : R(x,b)\}} \]
+  Note how since \(U_x\) only depends on \(a\), for all \(U_x \subseteq
+  S(x \in X)\) we have a different operation.
+
+  Because for every element of the set the operation yields a
+  different subset of \(S\) i.e. a family of subset indexed by \(x\)
+
+  Thus can always find a relation between set \(x\) and set \(S\).
+
+\item To go the opposite way and construct $U_x$ from \(R(x,a)\) we
+  can define
+
+  \[ U_x \equiv \{ a \in S : R(x,a) \} \]
+
+  For some fixed \(x\) we can now costruct an effective procedure to
+  decide whether $a$ belongs to $U_x$.  % TODO: was this it?
+\end{enumerate}
+
+Notice how this gives a bijection, because both compositions of the
+definitions given above give identity.
+
+We will therefore write $x\ r\ a$ instead of $R(x,a)$.
+
+Wi will also write $r\ x$ in lieu of $\{a \in S : x\ r\ a\}$.
+
+\begin{definition}[Inverse] We define the \newdefn{inverse} relation
+  of $r$ as $\invr{r}$ su that
+  \[ a\ \invr{r}\ x \equiv x\ r\ a \]
+\end{definition}
+
+\begin{definition}[Finer relation] We say that a relation $r$ is
+  \newdefn{contained} or \newdefn{finer} than $r'$ and write \(r
+  \subseteq r'\) if and only if
+  \[ x\ r\ a \rightarrow x\ r'\ a \]
+
+\end{definition}
+
+% TODO what is this?
+% \(rx \subseteq r'x\)
+% \((r^-) \equiv r \Longrightarrow Rel(x,s) \equiv Rel(s,x)\)
+
+\paragraph{Currying} From the computer scientist's perspective it's
+worth noting how currying\footnote{ Recall that the currying of a
+  function
+  \[ f : A \times B \rightarrow C \] results in:
+  \[ curry(f): A \rightarrow (B \rightarrow C) \] } can be used to
+show
+
+\[ Rel(X,S) : X \rightarrow \setpow{S} \]
+
+Firstly,
+
+\[ \Rel{X}{S} \sim X \times S \rightarrow \hprop \]
+
+by definition of relation.  By currying this is an isomorphism of
+
+\[ X \rightarrow S \rightarrow \hprop \]
+
+In turn, since subsets of $S$ have type $Prop \rightarrow S$,
+
+\[ X \rightarrow S \rightarrow \hprop \sim X \rightarrow \setpow{P}{S}
+  \sim \Op{X}{\setpow{S}} \]
+
+\begin{definition}[Composition of relations] For two relations \(r : X
+  \rightarrow Y\) and \(r : Y \rightarrow Z\) we can define composition
+  as
+
+  \[ x\; (\compos{r'}{r})\; z \equiv (\exists y \in P)(x\; r\; y \wedge y\;
+    r'\; z) \]
+\end{definition}
+
+% Do note that we can't extend this definition to collections because?
+% TODO
+
+
+% Recall that, if \(D,E \subseteq X\) are subsets, equality is defined
+%as \((\forall x \in X) D(x) %\Leftrightarrow E(x) \equiv D=E\).
+% 
+% \begin{definition}[Equivalence of relations]
+%   TODO
+%   \(\exists y
+%(\injsub{y}{rx} \wedge \injsub{y}{r'^- z}\) \(x (r' \cdot r) z \equiv
+%r x \between r'^-z\)
+% \end{definition}
+
+\subsection{Union, intersection and overlap of subsets}
+
+\paragraph{Empty and total subset} The empty $\emptyset$ and total set
+$X \subseteq X$ can be defined as, respectively,
+
+\[ \emptyset \equiv \{ x \in X : \bot \}= \{ x \in X : \neg(x = x) \}
+  = \{ x \in X : 0 \neq 1 \} = \ldots \]
+
+and
+
+\[ X \equiv \{ x \in X : \top \} = \{ x \in X: x = x \} = \{ x \in X :
+  1= 0 \} = \ldots \]
+
+We also define:
+
+\begin{definition}[Union of relations]
+  \[ D \cup E \equiv \{ x \in X : D(x) \vee E(x) \} \]
+\end{definition}
+
+\begin{definition}[Intersection of subsets]
+  \[D \cap E \equiv \{ x \in X : D(x) \wedge E(x) \}\]
+\end{definition}
+
+\begin{definition}[Overlapping subsets]
+  \[ D \between E \equiv (\exists x \in X)(D(x) \wedge E(x)) \]
+\end{definition}
+
+A few remarks are necessary wrt subset overlap.
+
+\begin{enumerate}
+\item Note that defining overlap as \(\neg(\forall x \in X)\neg(D(x)
+  \wedge E(x))\) would not make sense.  It is not a constructive
+  definition - it doesn't produce a witness.  \(\neg(\forall x \in
+  X)\neg(D(x) \wedge E(x))\) essentially means \(D \cap E \neq
+  \emptyset\); from an intuitionistic perspective \(D \cap E \neq
+  \emptyset\) and \(D \between E\) are two different things (as usual,
+  having equality between the two would boil down to have the rule of
+  double negation).
+\item By replacing \(\exists\) with \(\forall\) and \(\wedge\) in the
+  definition of overlap we have the definition of inclusion ( \((\forall
+  x \in X) (D(x) \Rightarrow E(x))\)) once more.
+\end{enumerate}
+
+
+\begin{definition}[Union and intersection of families of subsets]
+
+  Let \(D \subseteq X (i \in I)\); the generalized union and
+  intersection are the operations s.t.:
+
+  \[ \injsub{x}{\bigcup_{i\in I} D_i} \Leftrightarrow\injsub{x}{D_i}
+    \exists i \in I \]
+  \[ \injsub{x}{\bigcap_{i\in I} D_i} \Leftrightarrow \injsub{x}{D_i}
+    \forall i \in I \]
+
+  Their definition is as follows:
+
+  \[ \bigcup_{i \in I} \equiv \{ x \in X : (\exists i \in
+    I)(\injsub{x}{D_i}) \} \]
+
+  \[ \bigcap_{i \in I} D_i \equiv \{ x \in X (\forall i \in
+    I)(\injsub{x}{D_i}) \} \]
+\end{definition}
+
+Two important properties arise:
+
+\begin{enumerate}
+\item \(\bigcup_{i\in I} D_i \subseteq E\) iff for all \(i \in I\)
+  \(D_i\subseteq E\)
+\item \(E \subseteq \bigcap_{i\in I} D_i\) iff for all \(i\in I\) \(E
+  \subseteq D_i\)
+\end{enumerate}
+
+Moreover, the property of distributivity follows:
+
+\[ (\cup_{i\in I} D_i) \cap E = \bigcup_{i\in I} (D_i \cap E)\]
+% \paragraph{Union over families of subsets}
+% 
+% \[ \cup_{\injsub{j}{J}} D_j = \{ x \in X : (\exists
+% \injsub{j}{J})(\injsub{x}{D_j}) \} \]
+% 
+% TODO \((\cup_{\injsub{j}{J}} D_j === ????\)
+% TODO i missed something here
+
+\subsection{Singletons}
+\begin{definition}[Singletons] For a set $X$ for which equality $=_X$
+  is defined, we define singletons as subsets with exactly one element,
+  and write
+
+  \(\{ x\}\equiv \{ y \in X : y = x \}\)
+
+\end{definition}
+
+% TODO: i missed something here % They enjoy the following properties:
+
+% \begin{itemize}
+% \item \(\exists! x (\injsub{x}{D})\)
+% \item \(\exists x (\injsub{x}{D})\)\item \(\forall x,y \varepsilon
+% D)(x = y)\)
+% \item \(y \in \{ x \}\) sse \(y = x\) sse \(x \in \{ y \}\) sse
+% \(\{x\}\subseteq \{y\}\) sse \(\{x\} \between \{y\}\) sse \(\{ x \} =
+% \{ y \}\)
+% \end{itemize}
+
+
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "../notes"
