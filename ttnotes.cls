@@ -36,7 +36,8 @@
 \newcommand{\injsub}[2]{#1\ \insub\ #2}
 \newcommand{\injsubexpl}[3]{#1\ \insub_{#2}\ #3}
 \newcommand{\notinjsub}[2]{#1 \not\insub #2}
-\newcommand{\hpropj}[2]{#1 \; \text{prop} \; (#2)}
+\newcommand{\hpropj}[2]{#1 \; \hprop \; (#2)}
+\newcommand{\hprop}[0]{\; \text{prop}\; }
 \newcommand{\NN}{\mathbb{N}}
 \newcommand{\natrec}[3]{\textsf{R}(#1, #2, #3)}
 \newcommand{\ap}[2]{\textsf{Ap}(#1, #2)}
@@ -116,5 +117,11 @@
 \newcommand{\trueconn}{\top}
 \newcommand{\falseconn}{\bot}
 
+\newcommand{\Rel}[2]{{Rel}(#1,#2)}
+\newcommand{\Op}[2]{{Op}(#1,#2)}
+
+\newcommand{\invr}[1]{#1^{-}}
+\newcommand{\compos}[2]{#1 \circ #2}
+\newcommand{\ident}[2]{\textsf{id}}
 \newcommand{\newdefn}[1]{\textbf{#1}} % Use this whenever a new concept is
 % defined
